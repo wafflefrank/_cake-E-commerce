@@ -305,8 +305,9 @@ onMounted(() => {
 }
 
 .nav-container {
-  /* max-width: 1280px; */
-  /* margin: 0 auto; */
+  max-width: clamp(1260px, 88vw, 1200px);
+  margin: 0 auto;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -321,6 +322,7 @@ onMounted(() => {
 
 /* .nav-left { justify-self: start; }
 .nav-right { justify-self: end; display: flex; align-items: center; gap: 1.25rem; } */
+
 
 /* 已移除中間選單與漢堡按鈕 */
 
