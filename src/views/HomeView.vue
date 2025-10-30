@@ -1,23 +1,28 @@
 <template>
   <div class="home">
     <!-- 導航欄 -->
-    <nav class="navbar">
+    <nav class="navbar" :class="{ scrolled: isScrolled }">
       <div class="nav-container">
-        <div class="nav-logo">
-          <h1>餅乾生產餡</h1>
+        <div class="nav-left">
+          <a href="#home" class="brand">餅乾生產餡</a>
         </div>
-        <div class="nav-menu">
-          <a href="#home" class="nav-link">首頁</a>
-          <a href="#products" class="nav-link">商品</a>
-          <a href="#about" class="nav-link">關於</a>
-          <a href="#contact" class="nav-link">聯絡</a>
-        </div>
-        <div class="nav-cart">
-          <button class="cart-btn" @click="toggleCart">
-            <span class="cart-icon">🛒</span>
-            <span class="cart-count" v-if="cartStore.totalItems > 0">{{
-              cartStore.totalItems
-            }}</span>
+        <div class="nav-right">
+          <button class="hamburger" aria-label="menu" @click="isMenuOpen = !isMenuOpen">
+            <span></span><span></span><span></span>
+          </button>
+          <div class="nav-links" :class="{ 'is-open': isMenuOpen }">
+            <a href="#products" class="nav-link" :class="{ active: activeLink === 'products' }" @click="isMenuOpen=false">商品</a>
+            <a href="#about" class="nav-link" :class="{ active: activeLink === 'about' }" @click="isMenuOpen=false">關於</a>
+            <a href="#faq" class="nav-link" :class="{ active: activeLink === 'faq' }" @click="isMenuOpen=false">FAQ</a>
+            <a href="#custom" class="nav-link" :class="{ active: activeLink === 'custom' }" @click="isMenuOpen=false">鐵盒訂製</a>
+            <a href="#contact" class="nav-link" :class="{ active: activeLink === 'contact' }" @click="isMenuOpen=false">聯絡</a>
+          </div>
+          <button class="icon-btn" aria-label="account">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M229.19,213c-15.81-27.32-40.63-46.49-69.47-54.62a70,70,0,1,0-63.44,0C67.44,166.5,42.62,185.67,26.81,213a6,6,0,1,0,10.38,6C56.4,185.81,90.34,166,128,166s71.6,19.81,90.81,53a6,6,0,1,0,10.38-6ZM70,96a58,58,0,1,1,58,58A58.07,58.07,0,0,1,70,96Z"></path></svg>
+          </button>
+          <button class="icon-btn" aria-label="cart" @click="toggleCart">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M104,216a16,16,0,1,1-16-16A16,16,0,0,1,104,216Zm88-16a16,16,0,1,0,16,16A16,16,0,0,0,192,200ZM239.71,74.14l-25.64,92.28A24.06,24.06,0,0,1,191,184H92.16A24.06,24.06,0,0,1,69,166.42L33.92,40H16a8,8,0,0,1,0-16H40a8,8,0,0,1,7.71,5.86L57.19,64H232a8,8,0,0,1,7.71,10.14ZM221.47,80H61.64l22.81,82.14A8,8,0,0,0,92.16,168H191a8,8,0,0,0,7.71-5.86Z"></path></svg>
+            <span class="cart-count" v-if="cartStore.totalItems > 0">{{ cartStore.totalItems }}</span>
           </button>
         </div>
       </div>
@@ -222,6 +227,9 @@ import { useSimpleSwiper } from '@/composables/useSimpleSwiper'
 const productsStore = useProductsStore()
 const cartStore = useCartStore()
 const showCart = ref(false)
+const isScrolled = ref(false)
+const isMenuOpen = ref(false)
+const activeLink = ref('products')
 
 // 初始化動畫
 useAnimations()
@@ -255,105 +263,193 @@ onMounted(() => {
   document.querySelectorAll('.product-card, .gift-card, .testimonial-card').forEach((el) => {
     observer.observe(el)
   })
+
+  // 監聽滾動 - navbar 縮小
+  const onScroll = () => {
+    isScrolled.value = window.scrollY > 10
+  }
+  window.addEventListener('scroll', onScroll, { passive: true })
+
+  // 區塊觀察 - 選單高亮
+  const sectionObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          activeLink.value = entry.target.id
+        }
+      })
+    },
+    { rootMargin: '-40% 0px -55% 0px', threshold: 0 }
+  )
+  ;['products', 'about', 'faq', 'custom', 'contact'].forEach((id) => {
+    const el = document.getElementById(id)
+    if (el) sectionObserver.observe(el)
+  })
 })
 </script>
 
 <style scoped>
-/* 導航欄樣式 */
+/* 導航欄樣式（固定於最上方，與內容分離） */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.98);
   z-index: 1000;
-  padding: 1rem 0;
-  transition: all 0.3s ease;
-  border-bottom: 1px solid rgba(139, 69, 19, 0.1);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+  height: 64px;
+  padding: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  transition: height 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .nav-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  /* max-width: 1280px; */
+  /* margin: 0 auto; */
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 2rem;
 }
 
-.nav-logo h1 {
-  font-size: 1.5rem;
-  color: #8b4513;
-  margin: 0;
+.navbar.scrolled {
+  height: 56px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
 }
 
-.nav-menu {
+/* .nav-left { justify-self: start; }
+.nav-right { justify-self: end; display: flex; align-items: center; gap: 1.25rem; } */
+
+/* 已移除中間選單與漢堡按鈕 */
+
+/* 右側群組（桌面） */
+.nav-right {
+  justify-self: end;
   display: flex;
-  gap: 2rem;
+  align-items: center;
+  gap: 1.25rem;
+  position: relative;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.brand {
+  font-size: 2rem;
+  color: #2b2b2b;
+  text-decoration: none;
+  letter-spacing: 1px;
+  font-weight: 600;
 }
 
 .nav-link {
   text-decoration: none;
   color: #333;
-  font-weight: 500;
-  transition: color 0.3s ease;
+  font-weight: 400;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+  padding: 0.5rem 0.25rem;
+  position: relative;
 }
 
 .nav-link:hover {
   color: #8b4513;
 }
 
-.cart-btn {
-  background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 30px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  font-weight: 500;
-  box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
-  position: relative;
-  overflow: hidden;
-}
-
-.cart-btn::before {
+.nav-link::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  background: #8b4513;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.2s ease;
 }
 
-.cart-btn:hover::before {
-  left: 100%;
+.nav-link:hover::after { transform: scaleX(1); }
+.nav-link.active { color: #8b4513; }
+.nav-link.active::after { transform: scaleX(1); }
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: #8b4513;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
 }
 
-.cart-btn:hover {
-  background: linear-gradient(135deg, #a0522d 0%, #8b4513 100%);
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+.icon-btn:hover {
+  background: transparent;
+  box-shadow: none;
 }
+
+.icon-btn i, .icon-btn svg { font-size: 1.4rem; color: #444; width: 1.4rem; height: 1.4rem; }
 
 .cart-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
   background: #ff6b6b;
-  color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  color: #fff;
+  border-radius: 999px;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
+  font-size: 11px;
+  line-height: 1;
 }
+
+/* 讓內容不被固定導覽列遮擋 */
+.home {
+  padding-top: 64px;
+}
+
+/* 手機版：使用漢堡按鈕展開連結 */
+@media (max-width: 768px) {
+  .hamburger {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 8px;
+  }
+  .hamburger span { display: block; width: 22px; height: 2px; background: #333; }
+
+  .nav-links { display: none; }
+  .nav-links.is-open {
+    display: grid;
+    position: absolute;
+    top: 64px;
+    right: 0;
+    left: 0;
+    background: #fff;
+    padding: 12px 16px;
+    grid-auto-flow: row;
+    gap: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    z-index: 999;
+  }
+}
+
+/* 錨點捲動對齊導覽列高度，避免被遮或留白 */
+section { scroll-margin-top: 72px; }
 
 /* 購物車側邊欄 */
 .cart-sidebar {
