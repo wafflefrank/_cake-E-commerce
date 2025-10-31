@@ -1,9 +1,32 @@
 <script setup>
-import { RouterView } from 'vue-router'
+import { RouterView, useRouter } from 'vue-router'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import RouteLogoSplash from './components/RouteLogoSplash.vue'
+
+const showSplash = ref(false)
+const router = useRouter()
+let hideTimer = null
+
+onMounted(() => {
+  const stop = router.afterEach(() => {
+    // 顯示 Logo 淡入
+    showSplash.value = true
+    clearTimeout(hideTimer)
+    hideTimer = setTimeout(() => (showSplash.value = false), 1000) // 延長顯示讓淡入完整
+  })
+  // 保存關閉函式在實例上，卸載時呼叫
+  ;(window).__routeSplashStop = stop
+})
+
+onBeforeUnmount(() => {
+  if ((window).__routeSplashStop) (window).__routeSplashStop()
+  clearTimeout(hideTimer)
+})
 </script>
 
 <template>
   <div id="app">
+    <RouteLogoSplash :show="showSplash" />
     <RouterView />
   </div>
 </template>

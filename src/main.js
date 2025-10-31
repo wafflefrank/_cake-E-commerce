@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css' // 引入 Element Plus 的 CSS
+import './assets/theme.css'
 import App from './App.vue'
 import router from './router'
 

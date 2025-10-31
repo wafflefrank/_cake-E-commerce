@@ -17,7 +17,7 @@
             <a href="#custom" class="nav-link" :class="{ active: activeLink === 'custom' }" @click="isMenuOpen=false">鐵盒訂製</a>
             <a href="#contact" class="nav-link" :class="{ active: activeLink === 'contact' }" @click="isMenuOpen=false">聯絡</a>
           </div>
-          <button class="icon-btn" aria-label="account">
+          <button class="icon-btn ms-3" aria-label="account">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M229.19,213c-15.81-27.32-40.63-46.49-69.47-54.62a70,70,0,1,0-63.44,0C67.44,166.5,42.62,185.67,26.81,213a6,6,0,1,0,10.38,6C56.4,185.81,90.34,166,128,166s71.6,19.81,90.81,53a6,6,0,1,0,10.38-6ZM70,96a58,58,0,1,1,58,58A58.07,58.07,0,0,1,70,96Z"></path></svg>
           </button>
           <button class="icon-btn" aria-label="cart" @click="toggleCart">
@@ -64,46 +64,43 @@
 
     <!-- 主內容區域 -->
     <main>
-      <!-- Hero Section -->
-      <section id="home" class="hero">
-        <div class="hero-content">
-          <h1 class="hero-title" data-aos="fade-up">餅乾生產餡</h1>
-          <h2 class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">呈現最驚豔的味</h2>
-          <button class="cta-btn" @click="scrollToProducts" data-aos="fade-up" data-aos-delay="400">
-            探索商品
-          </button>
+      <!-- banner start -->
+      <div class="banner orign" data-aos="fade" data-aos-duration="2000">
+        <div class="pos-absolute top-20p end-12p vertical-rl">
+          <h2 class="fs-md-1 fs-3 ms-6 fw-medium letterSpace-32 text-light banner-text_title font-serifTc">餅乾生產餡</h2>
+          <h2 class="fs-md-2 fs-4 fw-medium letterSpace-16 text-light font-serifTc banner__text">呈現最驚豔的味</h2>
         </div>
-        <div class="hero-image">
-          <img src="/src/assets/images/newbanner.jpg" alt="美味餅乾" />
-        </div>
-      </section>
+      </div>
+      <!-- banner end -->
 
-      <!-- 緣起 Section -->
-      <section class="origin" data-aos="fade-up" data-aos-duration="1000">
-        <div class="container">
-          <h2 class="section-title" data-aos="fade-up" data-aos-delay="200">緣起</h2>
-          <div class="origin-content">
-            <div class="origin-text" data-aos="fade-right" data-aos-delay="400">
-              <p data-aos="fade-up" data-aos-delay="500">因緣際會幫忙朋友製作了餅乾，</p>
-              <p data-aos="fade-up" data-aos-delay="600">變想要挑戰鐵盒餅乾，</p>
-              <p data-aos="fade-up" data-aos-delay="700">朋友一吃驚艷，鼓勵我讓大家也能，</p>
-              <p data-aos="fade-up" data-aos-delay="800">吃得到這美味的夾餡餅乾</p>
-              <p data-aos="fade-up" data-aos-delay="900">變誤打誤撞開始生產餡這個品牌</p>
-              <p data-aos="fade-up" data-aos-delay="1000">從沒想過餅乾會成為另一個事業，</p>
-              <p data-aos="fade-up" data-aos-delay="1100">也希望每次你們收到餅乾時，</p>
-              <p data-aos="fade-up" data-aos-delay="1200">看到包裝的花材時能感到暖心。</p>
+      <!-- 緣起介紹 start -->
+      <div class="container my-md-13 my-10">
+        <div class="origin-content" data-aos="fade">
+          <div class="origin-images" data-aos="fade-up">
+            <div class="image-grid" style="align-items:center; justify-items:center;">
+              <img src="/src/assets/images/boxflower-index.JPG" alt="" />
+              <img src="/src/assets/images/indexswitchbox.JPG" alt="" />
             </div>
-            <div class="origin-images">
-              <div class="image-grid">
-                <img src="/src/assets/images/earl grey.jpg" alt="伯爵巧克力夾餡" />
-                <img src="/src/assets/images/handmade.jpg" alt="壓模餅乾" />
-                <img src="/src/assets/images/cheese.JPG" alt="香辣起司條" />
-                <img src="/src/assets/images/snowball2.jpg" alt="雪球餅乾" />
-              </div>
+          </div>
+          <div class="origin-text d-flex gap-4">
+            <p class="fs-7 fs-md-6 vertical-rl lh-2 lh-md-3 letterSpace-4 font-serifTc">
+              因緣際會幫忙朋友製作了餅乾，<br />
+              變想要挑戰鐵盒餅乾，<br />
+              朋友一吃驚艷，鼓勵我讓大家也能，<br />
+              吃得到這美味的夾餡餅乾<br />
+              變誤打誤撞開始生產餡這個品牌<br />
+              從沒想過餅乾會成為另一個事業，<br />
+              也希望每次你們收到餅乾時，<br />
+              看到包裝的花材時能感到暖心。<br />
+            </p>
+            <div class="d-flex">
+              <h3 class="fs-2 fs-md-2 fw-bold font-serifTc vertical-rl letterSpace-4">緣起</h3>
+              <p class="fs-8 fw-light vertical-rl letterSpace-2 text-indent-3">ORIGIN</p>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+      <!-- 緣起介紹 end -->
 
       <!-- 商品推薦 Section -->
       <section id="products" class="products" data-aos="fade-up">
@@ -305,7 +302,7 @@ onMounted(() => {
 }
 
 .nav-container {
-  max-width: clamp(1260px, 88vw, 1200px);
+  max-width: 1280px;
   margin: 0 auto;
   width: 100%;
   display: flex;
@@ -339,6 +336,12 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 1.25rem;
+  list-style: none;
+}
+
+.nav-links::before,
+.nav-links::after {
+  content: none;
 }
 
 .brand {
@@ -357,6 +360,17 @@ onMounted(() => {
   transition: color 0.2s ease;
   padding: 0.5rem 0.25rem;
   position: relative;
+}
+
+.nav-link::before {
+  content: none !important;
+  display: none !important;
+}
+
+.nav-link:first-child::before,
+.nav-link:first-child::after {
+  content: none !important;
+  display: none !important;
 }
 
 .nav-link:hover {
@@ -418,6 +432,11 @@ onMounted(() => {
 /* 讓內容不被固定導覽列遮擋 */
 .home {
   padding-top: 64px;
+}
+
+/* 桌面版隱藏漢堡按鈕 */
+.hamburger {
+  display: none;
 }
 
 /* 手機版：使用漢堡按鈕展開連結 */
@@ -647,7 +666,7 @@ section { scroll-margin-top: 72px; }
 /* 通用樣式 */
 .container {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 40px auto;
   padding: 0 2rem;
 }
 
