@@ -15,7 +15,6 @@
             <a href="#about" class="nav-link" :class="{ active: activeLink === 'about' }" @click="isMenuOpen=false">關於</a>
             <a href="#faq" class="nav-link" :class="{ active: activeLink === 'faq' }" @click="isMenuOpen=false">FAQ</a>
             <a href="#custom" class="nav-link" :class="{ active: activeLink === 'custom' }" @click="isMenuOpen=false">鐵盒訂製</a>
-            <a href="#contact" class="nav-link" :class="{ active: activeLink === 'contact' }" @click="isMenuOpen=false">聯絡</a>
           </div>
           <button class="icon-btn ms-3" aria-label="account">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M229.19,213c-15.81-27.32-40.63-46.49-69.47-54.62a70,70,0,1,0-63.44,0C67.44,166.5,42.62,185.67,26.81,213a6,6,0,1,0,10.38,6C56.4,185.81,90.34,166,128,166s71.6,19.81,90.81,53a6,6,0,1,0,10.38-6ZM70,96a58,58,0,1,1,58,58A58.07,58.07,0,0,1,70,96Z"></path></svg>
@@ -211,6 +210,17 @@
         </div>
       </div>
     </footer>
+
+    <!-- 回到頂部按鈕 -->
+    <button 
+      v-if="showBackToTop" 
+      class="back-to-top-btn" 
+      @click="scrollToTop"
+      aria-label="回到頂部"
+    >
+      <span class="back-to-top-text">page top</span>
+      <span class="back-to-top-line"></span>
+    </button>
   </div>
 </template>
 
@@ -227,6 +237,7 @@ const showCart = ref(false)
 const isScrolled = ref(false)
 const isMenuOpen = ref(false)
 const activeLink = ref('products')
+const showBackToTop = ref(false)
 
 // 初始化動畫
 useAnimations()
@@ -247,6 +258,23 @@ const scrollToProducts = () => {
   document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })
 }
 
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const checkScrollPosition = () => {
+  const scrollHeight = document.documentElement.scrollHeight
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+  const clientHeight = document.documentElement.clientHeight
+  
+  // 當滾動到接近底部時顯示按鈕（距離底部 100px 以內）
+  if (scrollTop + clientHeight >= scrollHeight - 100) {
+    showBackToTop.value = true
+  } else {
+    showBackToTop.value = false
+  }
+}
+
 onMounted(() => {
   // 初始化動畫
   const observer = new IntersectionObserver((entries) => {
@@ -264,8 +292,12 @@ onMounted(() => {
   // 監聽滾動 - navbar 縮小
   const onScroll = () => {
     isScrolled.value = window.scrollY > 10
+    checkScrollPosition()
   }
   window.addEventListener('scroll', onScroll, { passive: true })
+  
+  // 初始化檢查滾動位置
+  checkScrollPosition()
 
   // 區塊觀察 - 選單高亮
   const sectionObserver = new IntersectionObserver(
@@ -278,7 +310,7 @@ onMounted(() => {
     },
     { rootMargin: '-40% 0px -55% 0px', threshold: 0 }
   )
-  ;['products', 'about', 'faq', 'custom', 'contact'].forEach((id) => {
+  ;['products', 'about', 'faq', 'custom'].forEach((id) => {
     const el = document.getElementById(id)
     if (el) sectionObserver.observe(el)
   })
@@ -1126,6 +1158,74 @@ section { scroll-margin-top: 72px; }
   .gift-grid,
   .testimonials-slider {
     grid-template-columns: 1fr;
+  }
+}
+
+/* 回到頂部按鈕 */
+.back-to-top-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  z-index: 999;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  padding: 0;
+  flex-direction: row;
+}
+
+.back-to-top-text {
+  color: #d3d3d3;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  font-weight: 400;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: flex-end;
+}
+
+.back-to-top-line {
+  width: 2px;
+  height: 50px;
+  background: #d3d3d3;
+  display: block;
+  transition: background 0.3s ease, height 0.3s ease;
+  flex-shrink: 0;
+  align-self: flex-end;
+}
+
+.back-to-top-btn:hover .back-to-top-text {
+  color: #8b4513;
+}
+
+.back-to-top-btn:hover .back-to-top-line {
+  background: #8b4513;
+  height: 30px;
+}
+
+@media (max-width: 768px) {
+  .back-to-top-btn {
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+  
+  .back-to-top-text {
+    font-size: 0.8rem;
+  }
+  
+  .back-to-top-line {
+    height: 30px;
+  }
+  
+  .back-to-top-btn:hover .back-to-top-line {
+    height: 50px;
   }
 }
 </style>

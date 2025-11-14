@@ -10,7 +10,6 @@
           <router-link to="/" class="nav-link">首頁</router-link>
           <router-link to="/products" class="nav-link">商品</router-link>
           <router-link to="/about" class="nav-link active">關於</router-link>
-          <router-link to="/contact" class="nav-link">聯絡</router-link>
         </div>
         <div class="nav-cart">
           <button class="cart-btn" @click="toggleCart">
