@@ -1,79 +1,20 @@
 <template>
   <div class="products-page">
-    <!-- 導航欄 -->
-    <nav class="navbar">
-      <div class="nav-container">
-        <div class="nav-logo">
-          <h1>餅乾生產餡</h1>
-        </div>
-        <div class="nav-menu">
-          <router-link to="/" class="nav-link">首頁</router-link>
-          <router-link to="/products" class="nav-link active">商品</router-link>
-          <router-link to="/about" class="nav-link">關於</router-link>
-        </div>
-        <div class="nav-cart">
-          <button class="cart-btn" @click="toggleCart">
-            <span class="cart-icon">🛒</span>
-            <span class="cart-count" v-if="cartStore.totalItems > 0">{{
-              cartStore.totalItems
-            }}</span>
-          </button>
-        </div>
-      </div>
-    </nav>
-
-    <!-- 購物車側邊欄 -->
-    <div class="cart-sidebar" :class="{ active: showCart }">
-      <div class="cart-header">
-        <h3>購物車預覽</h3>
-        <button class="close-btn" @click="toggleCart">×</button>
-      </div>
-      <div class="cart-content">
-        <div v-if="cartStore.isEmpty" class="empty-cart">
-          <p>購物車是空的</p>
-        </div>
-        <div v-else>
-          <div v-for="item in cartStore.items" :key="item.id" class="cart-item">
-            <img :src="item.image" :alt="item.name" class="item-image" />
-            <div class="item-details">
-              <h4>{{ item.name }}</h4>
-              <p>NT${{ item.price }}</p>
-              <div class="quantity-controls">
-                <button @click="cartStore.updateQuantity(item.id, item.quantity - 1)">-</button>
-                <span>{{ item.quantity }}</span>
-                <button @click="cartStore.updateQuantity(item.id, item.quantity + 1)">+</button>
-              </div>
-            </div>
-            <button class="remove-btn" @click="cartStore.removeFromCart(item.id)">×</button>
-          </div>
-        </div>
-      </div>
-      <div class="cart-footer" v-if="!cartStore.isEmpty">
-        <div class="cart-total">
-          <p>總計: NT${{ cartStore.totalPrice }}</p>
-        </div>
-        <button class="checkout-btn">來結帳囉</button>
-      </div>
-    </div>
-
-    <!-- 主內容 -->
     <main>
-      <!-- Hero Section -->
-      <section class="products-hero">
+      <section class="page-header">
         <div class="container">
-          <h1 class="hero-title">精選商品</h1>
-          <p class="hero-subtitle">精挑細選的口味，一定會有你喜愛的那味</p>
+          <span class="sub-title">Product</span>
+          <h1 class="main-title">商品一覽</h1>
         </div>
       </section>
 
-      <!-- 商品分類 -->
-      <section class="product-categories">
+      <section class="filter-section">
         <div class="container">
-          <div class="category-tabs">
+          <div class="category-list">
             <button
               v-for="category in categories"
               :key="category.id"
-              :class="['category-tab', { active: selectedCategory === category.id }]"
+              :class="['category-btn', { active: selectedCategory === category.id }]"
               @click="selectedCategory = category.id"
             >
               {{ category.name }}
@@ -82,123 +23,82 @@
         </div>
       </section>
 
-      <!-- 商品列表 -->
       <section class="products-section">
         <div class="container">
-          <div class="products-grid">
+          <transition-group name="fade" tag="div" class="products-grid">
             <div
               v-for="product in filteredProducts"
               :key="product.id"
               class="product-card"
               @click="openProductModal(product)"
             >
-              <div class="product-image">
+              <div class="product-image-wrapper">
                 <img :src="product.image" :alt="product.name" />
-                <div class="product-overlay">
-                  <button class="quick-view-btn">快速查看</button>
+                <div class="hover-overlay">
+                  <span>more detail</span>
                 </div>
               </div>
-              <div class="product-info">
-                <h3>{{ product.name }}</h3>
-                <p class="product-name-en">{{ product.nameEn }}</p>
-                <p class="product-price">NT${{ product.price }}</p>
-                <button class="add-to-cart-btn" @click.stop="addToCart(product)">加入購物車</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      <!-- 禮盒專區 -->
-      <section class="gift-boxes-section">
-        <div class="container">
-          <h2 class="section-title">禮盒推薦</h2>
-          <p class="section-subtitle">送禮最佳質感挑這盒</p>
-          <div class="gift-grid">
-            <div v-for="gift in productsStore.giftBoxes" :key="gift.id" class="gift-card">
-              <div class="gift-image">
-                <img :src="gift.image" :alt="gift.name" />
-              </div>
-              <div class="gift-info">
-                <h3>{{ gift.name }}</h3>
-                <p>{{ gift.description }}</p>
-                <p class="gift-price">NT${{ gift.price }}</p>
-                <button class="add-to-cart-btn" @click="addToCart(gift)">加入購物車</button>
+              <div class="product-info">
+                <h3 class="product-title">{{ product.name }}</h3>
+                <div class="product-meta">
+                  <p class="price">NT$ {{ product.price }}</p>
+                </div>
+                <button class="btn-primary-block" @click.stop="addToCart(product)">
+                  加入購物車
+                </button>
               </div>
             </div>
-          </div>
+          </transition-group>
         </div>
       </section>
     </main>
 
-    <!-- 商品詳情 Modal -->
-    <div v-if="selectedProduct" class="product-modal" @click="closeProductModal">
-      <div class="modal-content" @click.stop>
-        <button class="modal-close" @click="closeProductModal">×</button>
-        <div class="modal-body">
-          <div class="product-image-large">
-            <img :src="selectedProduct.image" :alt="selectedProduct.name" />
-          </div>
-          <div class="product-details">
-            <h2>{{ selectedProduct.name }}</h2>
-            <p class="product-name-en">{{ selectedProduct.nameEn }}</p>
-            <p class="product-description">{{ selectedProduct.description }}</p>
-            <p class="product-price-large">NT${{ selectedProduct.price }}</p>
-            <div class="quantity-selector">
-              <label>數量：</label>
-              <div class="quantity-controls">
+    <transition name="modal">
+      <div v-if="selectedProduct" class="modal-backdrop" @click="closeProductModal">
+        <div class="modal-content" @click.stop>
+          <button class="modal-close" @click="closeProductModal">✕</button>
+          <div class="modal-body">
+            <div class="modal-image">
+              <img :src="selectedProduct.image" :alt="selectedProduct.name" />
+            </div>
+            <div class="modal-details">
+              <h2 class="modal-title">{{ selectedProduct.name }}</h2>
+              <p class="modal-en-name">{{ selectedProduct.nameEn }}</p>
+              <p class="modal-desc">{{ selectedProduct.description }}</p>
+              <p class="modal-price">NT$ {{ selectedProduct.price }}</p>
+
+              <div class="quantity-selector">
                 <button @click="quantity = Math.max(1, quantity - 1)">-</button>
-                <input v-model.number="quantity" type="number" min="1" />
+                <input v-model.number="quantity" type="number" min="1" readonly />
                 <button @click="quantity++">+</button>
               </div>
-            </div>
-            <button class="add-to-cart-large" @click="addToCartWithQuantity">加入購物車</button>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3>餅乾生產餡</h3>
-            <p>呈現最驚豔的味</p>
+              <button class="btn-primary-block large" @click="addToCartWithQuantity">
+                加入購物車
+              </button>
+            </div>
           </div>
-          <div class="footer-section">
-            <h4>商品</h4>
-            <ul>
-              <li><router-link to="/products">夾餡餅乾</router-link></li>
-              <li><router-link to="/products">造型餅乾</router-link></li>
-              <li><router-link to="/products">禮盒</router-link></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h4>聯絡我們</h4>
-            <p>Instagram: @iiincookie</p>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <p>Copyright © 2022 餅乾生產餡.</p>
         </div>
       </div>
-    </footer>
+    </transition>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
+// 請確認你的 store 路徑是否正確，若無 store 請維持原本的假資料邏輯
 import { useProductsStore } from '@/stores/products'
 import { useCartStore } from '@/stores/cart'
 
 const productsStore = useProductsStore()
 const cartStore = useCartStore()
-const showCart = ref(false)
+
 const selectedProduct = ref(null)
 const quantity = ref(1)
 const selectedCategory = ref('all')
 
+// 模擬分類資料
 const categories = [
   { id: 'all', name: '全部商品' },
   { id: '夾餡餅乾', name: '夾餡餅乾' },
@@ -207,6 +107,7 @@ const categories = [
   { id: '經典餅乾', name: '經典餅乾' }
 ]
 
+// 過濾邏輯
 const filteredProducts = computed(() => {
   if (selectedCategory.value === 'all') {
     return productsStore.products
@@ -214,13 +115,10 @@ const filteredProducts = computed(() => {
   return productsStore.products.filter((product) => product.category === selectedCategory.value)
 })
 
-const toggleCart = () => {
-  showCart.value = !showCart.value
-}
-
+// 購物車邏輯
 const addToCart = (product) => {
   cartStore.addToCart(product)
-  // 可以加入動畫效果
+  alert(`已將 ${product.name} 加入購物車！`) // 簡單提示
 }
 
 const addToCartWithQuantity = () => {
@@ -240,669 +138,401 @@ const closeProductModal = () => {
   quantity.value = 1
 }
 
-onMounted(() => {
-  // 初始化動畫
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('animate-in')
-      }
-    })
-  })
+// --- 動畫偵測邏輯 (已修復) ---
+let observer = null
 
-  document.querySelectorAll('.product-card, .gift-card').forEach((el) => {
-    observer.observe(el)
-  })
+const setupObserver = () => {
+  // 如果舊的 observer 存在，先停止它，避免重複偵測
+  if (observer) observer.disconnect()
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible')
+        }
+      })
+    },
+    { threshold: 0.1 }
+  )
+
+  // 抓取所有卡片並開始偵測
+  const cards = document.querySelectorAll('.product-card')
+  cards.forEach((el) => observer.observe(el))
+}
+
+onMounted(() => {
+  setupObserver()
+})
+
+// 關鍵修復：監聽 filteredProducts 的變化
+watch(filteredProducts, async () => {
+  // 等待 Vue 更新完 DOM (畫面元素)
+  await nextTick()
+  // 重新綁定動畫偵測
+  setupObserver()
 })
 </script>
 
 <style scoped>
-/* 導航欄樣式 - 與首頁相同 */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  z-index: 1000;
-  padding: 1rem 0;
-  transition: all 0.3s ease;
+/* 引入襯線字體，增加日系感 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@300;400;500&display=swap');
+
+:root {
+  /* 定義日系簡約色票 */
+  --bg-color: #f9f9f9; /* 極淡的灰白背景 */
+  --primary-green: #6c7059; /* 參考圖的莫蘭迪綠 */
+  --primary-hover: #565a46;
+  --text-main: #333333;
+  --text-light: #666666;
+  --font-serif: 'Noto Serif TC', serif;
+  --font-sans: 'Noto Sans TC', sans-serif;
 }
 
-.nav-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 2rem;
-}
-
-.nav-logo h1 {
-  font-size: 1.5rem;
-  color: #8b4513;
-  margin: 0;
-}
-
-.nav-menu {
-  display: flex;
-  gap: 2rem;
-}
-
-.nav-link {
-  text-decoration: none;
+.products-page {
+  background-color: #f9f9f9; /* 確保整體背景色 */
+  min-height: 100vh;
+  font-family: 'Noto Sans TC', sans-serif;
   color: #333;
-  font-weight: 500;
-  transition: color 0.3s ease;
 }
 
-.nav-link:hover,
-.nav-link.active {
-  color: #8b4513;
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-.cart-btn {
-  background: #8b4513;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 25px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-.cart-btn:hover {
-  background: #a0522d;
-  transform: translateY(-2px);
-}
-
-.cart-count {
-  background: #ff6b6b;
-  color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-}
-
-/* 購物車側邊欄 - 與首頁相同 */
-.cart-sidebar {
-  position: fixed;
-  top: 0;
-  right: -400px;
-  width: 400px;
-  height: 100vh;
-  background: white;
-  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
-  transition: right 0.3s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.cart-sidebar.active {
-  right: 0;
-}
-
-.cart-header {
-  padding: 1rem;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.cart-content {
-  flex: 1;
-  padding: 1rem;
-  overflow-y: auto;
-}
-
-.cart-item {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid #eee;
-}
-
-.item-image {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.item-details h4 {
-  margin: 0 0 0.5rem 0;
-  font-size: 0.9rem;
-}
-
-.quantity-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.quantity-controls button {
-  background: #8b4513;
-  color: white;
-  border: none;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.cart-footer {
-  padding: 1rem;
-  border-top: 1px solid #eee;
-}
-
-.checkout-btn {
-  width: 100%;
-  background: #8b4513;
-  color: white;
-  border: none;
-  padding: 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-top: 1rem;
-}
-
-/* Products Hero */
-.products-hero {
-  background: linear-gradient(135deg, #f5f5dc 0%, #ffe4b5 100%);
-  padding: 8rem 0 4rem;
+/* --- Page Header (日系標題) --- */
+.page-header {
+  padding: 2rem 0 1rem;
   text-align: center;
 }
 
-.hero-title {
-  font-size: 3rem;
-  color: #8b4513;
-  margin-bottom: 1rem;
-  animation: fadeInUp 1s ease;
+.sub-title {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  color: #888;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
 }
 
-.hero-subtitle {
-  font-size: 1.5rem;
-  color: #a0522d;
-  animation: fadeInUp 1s ease 0.2s both;
+.main-title {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #4a4a4a;
+  letter-spacing: 3px;
+  margin: 0;
 }
 
-/* 商品分類 */
-.product-categories {
-  padding: 2rem 0;
-  background: white;
-  border-bottom: 1px solid #eee;
+/* --- Category Filter (極簡選單) --- */
+.filter-section {
+  margin-bottom: 3rem;
+  text-align: center;
 }
 
-.category-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
+.category-list {
+  display: inline-flex;
+  gap: 2rem;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
-.category-tab {
-  background: transparent;
-  border: 2px solid #8b4513;
-  color: #8b4513;
-  padding: 0.8rem 1.5rem;
-  border-radius: 25px;
+.category-btn {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: #888;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color 0.3s ease;
+  font-family: var(--font-serif);
 }
 
-.category-tab:hover,
-.category-tab.active {
-  background: #8b4513;
-  color: white;
+.category-btn:hover,
+.category-btn.active {
+  color: #333;
 }
 
-/* 商品列表 */
-.products-section {
-  padding: 4rem 0;
-  background: #f8f8f8;
+/* 底部線條動畫 */
+.category-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background-color: #333;
+  transition:
+    width 0.3s ease,
+    left 0.3s ease;
 }
 
+.category-btn.active::after {
+  width: 100%;
+  left: 0;
+}
+
+/* --- Product Grid --- */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 3rem 2rem; /* 增加間距讓畫面呼吸 */
+  padding-bottom: 4rem;
 }
 
+/* --- Product Card (核心修改) --- */
 .product-card {
-  background: white;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  background: transparent; /* 移除白色背景卡片感，讓圖片突出 */
   cursor: pointer;
-  opacity: 0;
-  transform: translateY(30px);
+  transition: transform 0.4s ease;
+  opacity: 0; /* 配合 Observer 做進場動畫 */
 }
 
-.product-card.animate-in {
+.product-card.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
 .product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transition: all 0.5s ease;
 }
 
-.product-image {
+.product-image-wrapper {
   position: relative;
-  overflow: hidden;
-}
-
-.product-image img {
   width: 100%;
-  height: 250px;
-  object-fit: cover;
-  transition: transform 0.3s ease;
+  padding-top: 100%; /* 1:1 正方形圖片 */
+  overflow: hidden;
+  margin-bottom: 1.2rem;
+  /* 圖片載入前的背景色 */
+  background-color: #eaeaea;
 }
 
-.product-overlay {
+.product-image-wrapper img {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+/* 簡約遮罩 */
+.hover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* 變更：深色遮罩 */
+  opacity: 0;
+  transition: all 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  /* backdrop-filter: blur(4px); 新增：模糊效果 */
 }
 
-.product-card:hover .product-overlay {
+.hover-overlay span {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  /* 動畫初始狀態 */
+  opacity: 0;
+  /* transform: translateY(20px); */
+  transition: all 0.5s ease;
+}
+
+.product-image-wrapper:hover .hover-overlay {
   opacity: 1;
 }
-
-.product-card:hover .product-image img {
-  transform: scale(1.1);
-}
-
-.quick-view-btn {
-  background: #8b4513;
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-}
-
-.quick-view-btn:hover {
-  background: #a0522d;
-  transform: scale(1.05);
+.product-image-wrapper:hover span {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.01s; /* 讓文字在背景出現後再出現 */
 }
 
 .product-info {
-  padding: 1.5rem;
+  text-align: center;
 }
 
-.product-info h3 {
-  font-size: 1.3rem;
-  color: #333;
+.product-title {
+  font-size: 1.1rem;
+  color: #444;
   margin-bottom: 0.5rem;
+  font-weight: 500;
+  letter-spacing: 1px;
 }
 
-.product-name-en {
-  color: #666;
-  font-style: italic;
+.product-meta {
   margin-bottom: 1rem;
 }
 
-.product-price {
-  font-size: 1.2rem;
-  color: #8b4513;
-  font-weight: bold;
-  margin-bottom: 1rem;
+.price {
+  color: #6c7059; /* 價格使用主題色 */
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 1px;
 }
 
-.add-to-cart-btn {
+/* --- 按鈕樣式 (參考截圖) --- */
+.btn-primary-block {
+  display: block;
   width: 100%;
-  background: #8b4513;
+  background-color: #6c7059; /* 莫蘭迪綠 */
   color: white;
   border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 25px;
+  padding: 12px 0;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
   cursor: pointer;
-  font-size: 1rem;
   transition: all 0.3s ease;
+  border-radius: 5px; /* 微圓角，接近直角 */
 }
 
-.add-to-cart-btn:hover {
-  background: #a0522d;
-  transform: translateY(-2px);
+.btn-primary-block:hover {
+  background-color: #565a46;
+  box-shadow: 0 4px 12px rgba(108, 112, 89, 0.2);
 }
 
-/* 禮盒專區 */
-.gift-boxes-section {
-  padding: 5rem 0;
-  background: white;
-}
-
-.section-title {
-  font-size: 2.5rem;
-  color: #8b4513;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.section-subtitle {
-  text-align: center;
-  color: #666;
-  margin-bottom: 3rem;
-  font-size: 1.1rem;
-}
-
-.gift-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-}
-
-.gift-card {
-  background: #f8f8f8;
-  border-radius: 15px;
-  padding: 2rem;
-  text-align: center;
-  transition: all 0.3s ease;
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-.gift-card.animate-in {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.gift-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-.gift-image img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 1rem;
-}
-
-.gift-info h3 {
-  font-size: 1.3rem;
-  color: #333;
-  margin-bottom: 1rem;
-}
-
-.gift-price {
-  font-size: 1.2rem;
-  color: #8b4513;
-  font-weight: bold;
-  margin: 1rem 0;
-}
-
-/* 商品詳情 Modal */
-.product-modal {
+/* --- Modal 樣式優化 --- */
+.modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000;
-  padding: 2rem;
+  z-index: 1000;
+  backdrop-filter: blur(4px); /* 背景模糊效果 */
 }
 
 .modal-content {
   background: white;
-  border-radius: 15px;
-  max-width: 800px;
-  width: 100%;
+  width: 900px;
+  max-width: 90%;
   max-height: 90vh;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   position: relative;
-  animation: modalSlideIn 0.3s ease;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
 .modal-close {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 15px;
+  right: 20px;
   background: none;
   border: none;
-  font-size: 2rem;
+  font-size: 1.5rem;
   cursor: pointer;
+  z-index: 10;
   color: #666;
-  z-index: 1;
 }
 
 .modal-body {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  padding: 2rem;
+  display: flex;
+  padding: 40px;
+  gap: 40px;
+  overflow-y: auto;
 }
 
-.product-image-large img {
+.modal-image {
+  flex: 1;
+}
+
+.modal-image img {
   width: 100%;
-  height: 400px;
+  height: auto;
   object-fit: cover;
-  border-radius: 10px;
 }
 
-.product-details h2 {
-  font-size: 2rem;
-  color: #8b4513;
+.modal-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.modal-title {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
   margin-bottom: 0.5rem;
-}
-
-.product-name-en {
-  color: #666;
-  font-style: italic;
-  margin-bottom: 1rem;
-}
-
-.product-description {
   color: #333;
-  line-height: 1.6;
+}
+
+.modal-en-name {
+  color: #888;
+  font-style: italic;
   margin-bottom: 1.5rem;
 }
 
-.product-price-large {
-  font-size: 2rem;
-  color: #8b4513;
+.modal-price {
+  font-size: 1.5rem;
+  color: var(--primary-green);
   font-weight: bold;
-  margin-bottom: 1.5rem;
+  margin: 1rem 0 2rem;
 }
 
 .quantity-selector {
-  margin-bottom: 1.5rem;
-}
-
-.quantity-selector label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-.quantity-controls {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #ddd;
+  width: fit-content;
 }
 
-.quantity-controls button {
-  background: #8b4513;
-  color: white;
+.quantity-selector button {
+  background: none;
   border: none;
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
+  padding: 10px 15px;
   cursor: pointer;
   font-size: 1.2rem;
+  color: #333;
 }
 
-.quantity-controls input {
-  width: 60px;
+.quantity-selector input {
+  width: 50px;
   text-align: center;
-  border: 2px solid #8b4513;
-  border-radius: 5px;
-  padding: 0.5rem;
-}
-
-.add-to-cart-large {
-  width: 100%;
-  background: #8b4513;
-  color: white;
   border: none;
-  padding: 1rem 2rem;
-  border-radius: 25px;
-  cursor: pointer;
   font-size: 1.1rem;
-  transition: all 0.3s ease;
+  outline: none;
 }
 
-.add-to-cart-large:hover {
-  background: #a0522d;
-  transform: translateY(-2px);
+/* Modal 動畫 */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
 }
 
-/* Footer */
-.footer {
-  background: #333;
-  color: white;
-  padding: 3rem 0 1rem;
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
 }
 
-.footer-content {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-.footer-section h3,
-.footer-section h4 {
-  color: #8b4513;
-  margin-bottom: 1rem;
-}
-
-.footer-section ul {
-  list-style: none;
-  padding: 0;
-}
-
-.footer-section ul li {
-  margin-bottom: 0.5rem;
-}
-
-.footer-section ul li a {
-  color: #ccc;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.footer-section ul li a:hover {
-  color: #8b4513;
-}
-
-.footer-bottom {
-  text-align: center;
-  padding-top: 2rem;
-  border-top: 1px solid #555;
-  color: #ccc;
-}
-
-/* 通用樣式 */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-
-/* 動畫 */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* 響應式設計 */
+/* 響應式 */
 @media (max-width: 768px) {
-  .nav-container {
-    padding: 0 1rem;
-  }
-
-  .nav-menu {
-    display: none;
-  }
-
-  .hero-title {
-    font-size: 2rem;
-  }
-
-  .cart-sidebar {
-    width: 100%;
-    right: -100%;
-  }
-
-  .products-grid,
-  .gift-grid {
-    grid-template-columns: 1fr;
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* 手機版一排兩個 */
+    gap: 1.5rem 1rem;
   }
 
   .modal-body {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    padding: 20px;
   }
 
-  .category-tabs {
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding-bottom: 1rem;
+  .main-title {
+    font-size: 1.8rem;
   }
 }
 </style>

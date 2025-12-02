@@ -1,61 +1,5 @@
 <template>
   <div class="about">
-    <!-- 導航欄 -->
-    <nav class="navbar">
-      <div class="nav-container">
-        <div class="nav-logo">
-          <h1>餅乾生產餡</h1>
-        </div>
-        <div class="nav-menu">
-          <router-link to="/" class="nav-link">首頁</router-link>
-          <router-link to="/products" class="nav-link">商品</router-link>
-          <router-link to="/about" class="nav-link active">關於</router-link>
-        </div>
-        <div class="nav-cart">
-          <button class="cart-btn" @click="toggleCart">
-            <span class="cart-icon">🛒</span>
-            <span class="cart-count" v-if="cartStore.totalItems > 0">{{
-              cartStore.totalItems
-            }}</span>
-          </button>
-        </div>
-      </div>
-    </nav>
-
-    <!-- 購物車側邊欄 -->
-    <div class="cart-sidebar" :class="{ active: showCart }">
-      <div class="cart-header">
-        <h3>購物車預覽</h3>
-        <button class="close-btn" @click="toggleCart">×</button>
-      </div>
-      <div class="cart-content">
-        <div v-if="cartStore.isEmpty" class="empty-cart">
-          <p>購物車是空的</p>
-        </div>
-        <div v-else>
-          <div v-for="item in cartStore.items" :key="item.id" class="cart-item">
-            <img :src="item.image" :alt="item.name" class="item-image" />
-            <div class="item-details">
-              <h4>{{ item.name }}</h4>
-              <p>NT${{ item.price }}</p>
-              <div class="quantity-controls">
-                <button @click="cartStore.updateQuantity(item.id, item.quantity - 1)">-</button>
-                <span>{{ item.quantity }}</span>
-                <button @click="cartStore.updateQuantity(item.id, item.quantity + 1)">+</button>
-              </div>
-            </div>
-            <button class="remove-btn" @click="cartStore.removeFromCart(item.id)">×</button>
-          </div>
-        </div>
-      </div>
-      <div class="cart-footer" v-if="!cartStore.isEmpty">
-        <div class="cart-total">
-          <p>總計: NT${{ cartStore.totalPrice }}</p>
-        </div>
-        <button class="checkout-btn">來結帳囉</button>
-      </div>
-    </div>
-
     <!-- 主內容 -->
     <main>
       <!-- Hero Section -->
@@ -199,48 +143,14 @@
         </div>
       </section>
     </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="container">
-        <div class="footer-content">
-          <div class="footer-section">
-            <h3>餅乾生產餡</h3>
-            <p>呈現最驚豔的味</p>
-          </div>
-          <div class="footer-section">
-            <h4>商品</h4>
-            <ul>
-              <li><router-link to="/products">夾餡餅乾</router-link></li>
-              <li><router-link to="/products">造型餅乾</router-link></li>
-              <li><router-link to="/products">禮盒</router-link></li>
-            </ul>
-          </div>
-          <div class="footer-section">
-            <h4>聯絡我們</h4>
-            <p>Instagram: @iiincookie</p>
-          </div>
-        </div>
-        <div class="footer-bottom">
-          <p>Copyright © 2022 餅乾生產餡.</p>
-        </div>
-      </div>
-    </footer>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useProductsStore } from '@/stores/products'
-import { useCartStore } from '@/stores/cart'
 
 const productsStore = useProductsStore()
-const cartStore = useCartStore()
-const showCart = ref(false)
-
-const toggleCart = () => {
-  showCart.value = !showCart.value
-}
 
 onMounted(() => {
   // 初始化動畫
@@ -261,174 +171,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 導航欄樣式 - 與首頁相同 */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  z-index: 1000;
-  padding: 1rem 0;
-  transition: all 0.3s ease;
-}
-
-.nav-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 2rem;
-}
-
-.nav-logo h1 {
-  font-size: 1.5rem;
-  color: #8b4513;
-  margin: 0;
-}
-
-.nav-menu {
-  display: flex;
-  gap: 2rem;
-}
-
-.nav-link {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.nav-link:hover,
-.nav-link.active {
-  color: #8b4513;
-}
-
-.cart-btn {
-  background: #8b4513;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 25px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-.cart-btn:hover {
-  background: #a0522d;
-  transform: translateY(-2px);
-}
-
-.cart-count {
-  background: #ff6b6b;
-  color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-}
-
-/* 購物車側邊欄 - 與首頁相同 */
-.cart-sidebar {
-  position: fixed;
-  top: 0;
-  right: -400px;
-  width: 400px;
-  height: 100vh;
-  background: white;
-  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
-  transition: right 0.3s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.cart-sidebar.active {
-  right: 0;
-}
-
-.cart-header {
-  padding: 1rem;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.cart-content {
-  flex: 1;
-  padding: 1rem;
-  overflow-y: auto;
-}
-
-.cart-item {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid #eee;
-}
-
-.item-image {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.item-details h4 {
-  margin: 0 0 0.5rem 0;
-  font-size: 0.9rem;
-}
-
-.quantity-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.quantity-controls button {
-  background: #8b4513;
-  color: white;
-  border: none;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.cart-footer {
-  padding: 1rem;
-  border-top: 1px solid #eee;
-}
-
-.checkout-btn {
-  width: 100%;
-  background: #8b4513;
-  color: white;
-  border: none;
-  padding: 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-top: 1rem;
-}
-
 /* About Hero */
 .about-hero {
   background: linear-gradient(135deg, #f5f5dc 0%, #ffe4b5 100%);
@@ -708,52 +450,6 @@ onMounted(() => {
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* Footer */
-.footer {
-  background: #333;
-  color: white;
-  padding: 3rem 0 1rem;
-}
-
-.footer-content {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-.footer-section h3,
-.footer-section h4 {
-  color: #8b4513;
-  margin-bottom: 1rem;
-}
-
-.footer-section ul {
-  list-style: none;
-  padding: 0;
-}
-
-.footer-section ul li {
-  margin-bottom: 0.5rem;
-}
-
-.footer-section ul li a {
-  color: #ccc;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.footer-section ul li a:hover {
-  color: #8b4513;
-}
-
-.footer-bottom {
-  text-align: center;
-  padding-top: 2rem;
-  border-top: 1px solid #555;
-  color: #ccc;
-}
-
 /* 通用樣式 */
 .container {
   max-width: 1200px;
@@ -789,11 +485,6 @@ onMounted(() => {
 
   .story-content {
     grid-template-columns: 1fr;
-  }
-
-  .cart-sidebar {
-    width: 100%;
-    right: -100%;
   }
 
   .philosophy-grid,
