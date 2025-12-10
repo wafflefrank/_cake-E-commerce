@@ -136,7 +136,10 @@
           </div>
           <div class="footer-section">
             <h4>聯絡我們</h4>
-            <p>Instagram: @iiincookie</p>
+            <p>
+              Instagram: 
+              <a href="https://www.instagram.com/iiincookie/" target="_blank" rel="noopener noreferrer">@iiincookie</a>
+            </p>
           </div>
         </div>
         <div class="footer-bottom">
@@ -154,7 +157,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, nextTick } from 'vue'
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
 import RouteLogoSplash from '@/components/RouteLogoSplash.vue'
@@ -198,22 +201,32 @@ watch(
 )
 
 // 監聽路由變化，顯示/隱藏過場動畫
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to, from, next) => {
   // 僅在實際切換頁面時觸發 (from.name 存在)，避免首次載入時觸發
   if (from.name) {
-    // 立即顯示動畫遮罩，隱藏內容
+    // 立即顯示動畫遮罩，隱藏內容（在路由切換前）
+    // 使用 nextTick 確保 DOM 更新完成
     isRouteLoading.value = true
-    // 等待動畫元件渲染並開始顯示
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    // 立即滾動到頂部
+    window.scrollTo({ top: 0, behavior: 'instant' })
+    // 等待 DOM 更新，確保遮罩已經顯示並覆蓋內容
+    await nextTick()
+    // 再等待一小段時間確保遮罩完全覆蓋
+    await new Promise((resolve) => setTimeout(resolve, 10))
   }
+  // 繼續路由導航
+  next()
 })
 
 router.afterEach(() => {
   // 等待動畫完成後才隱藏遮罩並顯示新頁面內容
   // logoIn 動畫：1200ms + 100ms delay = 1300ms，加上過渡效果 500ms，總共約 1800ms
+  // 但為了確保動畫完全結束，我們等待足夠的時間
   setTimeout(() => {
     isRouteLoading.value = false
-  }, 700) // 確保動畫完全結束後才顯示新頁面
+    // 再次確保滾動到頂部（在動畫完成後）
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, 1000) // 確保動畫完全結束後才顯示新頁面
 })
 </script>
 
@@ -229,7 +242,7 @@ router.afterEach(() => {
 .main-content {
   padding-top: 64px;
   flex: 1; /* 讓 main 區域填滿 header 和 footer 之間的剩餘空間 */
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
 /* 在路由切換動畫期間隱藏內容 */
@@ -237,6 +250,8 @@ router.afterEach(() => {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  /* 確保立即隱藏，避免閃現 */
+  transition: opacity 0.1s ease, visibility 0.1s ease;
 }
 
 /* 導航欄樣式 (從 HomeView.vue 搬移) */
@@ -593,6 +608,18 @@ router.afterEach(() => {
 
 .footer-section ul li a:hover {
   color: #8b4513;
+}
+
+.footer-section p a {
+  color: #8b4513;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.footer-section p a:hover {
+  border-bottom-color: #8b4513;
+  opacity: 0.8;
 }
 
 .footer-bottom {

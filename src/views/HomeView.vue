@@ -36,8 +36,8 @@
               也希望每次你們收到餅乾時，<br />
               看到包裝的花材時能感到暖心。<br />
             </p>
-            <div class="d-flex">
-              <h3 class="fs-2 fs-md-2 fw-bold font-serifTc vertical-rl letterSpace-4">緣起</h3>
+            <div class="d-flex origin-title-group">
+              <h3 class="fs-1 fs-md-2 fw-bold font-serifTc vertical-rl letterSpace-4">緣起</h3>
               <p class="fs-8 fw-light vertical-rl letterSpace-2 text-indent-3">ORIGIN</p>
             </div>
           </div>
@@ -61,7 +61,7 @@
               :data-aos="'fade-up'"
               :data-aos-delay="(index + 1) * 200"
             >
-              <div class="product-image">
+              <div class="product-image" @click="openProductModal(product)">
                 <img :src="product.image" :alt="product.name" />
                 <div class="product-overlay">
                   <span class="details-text">more detail</span>
@@ -127,11 +127,41 @@
         </div>
       </section>
     </main>
+
+    <!-- 商品詳情 Modal -->
+    <transition name="modal">
+      <div v-if="selectedProduct" class="modal-backdrop" @click="closeProductModal">
+        <div class="modal-content" @click.stop>
+          <button class="modal-close" @click="closeProductModal">✕</button>
+          <div class="modal-body">
+            <div class="modal-image">
+              <img :src="selectedProduct.image" :alt="selectedProduct.name" />
+            </div>
+            <div class="modal-details">
+              <h2 class="modal-title">{{ selectedProduct.name }}</h2>
+              <p class="modal-en-name">{{ selectedProduct.nameEn }}</p>
+              <p class="modal-desc">{{ selectedProduct.description }}</p>
+              <p class="modal-price">NT$ {{ selectedProduct.price }}</p>
+
+              <div class="quantity-selector">
+                <button @click="quantity = Math.max(1, quantity - 1)">-</button>
+                <input v-model.number="quantity" type="number" min="1" readonly />
+                <button @click="quantity++">+</button>
+              </div>
+
+              <button class="btn-primary-block large" @click="addToCartWithQuantity">
+                加入購物車
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useProductsStore } from '@/stores/products'
 import { useCartStore } from '@/stores/cart'
 import { useAnimations } from '@/composables/useAnimations'
@@ -139,6 +169,10 @@ import { useSimpleSwiper } from '@/composables/useSimpleSwiper'
 
 const productsStore = useProductsStore()
 const cartStore = useCartStore()
+
+// Modal 相關狀態
+const selectedProduct = ref(null)
+const quantity = ref(1)
 
 // 初始化動畫
 useAnimations()
@@ -149,6 +183,23 @@ const { SwiperComponent, SwiperSlide, swiperModules, swiperOptions } = useSimple
 const addToCart = (product) => {
   cartStore.addToCart(product)
   // 可以加入動畫效果
+}
+
+const openProductModal = (product) => {
+  selectedProduct.value = product
+  quantity.value = 1
+}
+
+const closeProductModal = () => {
+  selectedProduct.value = null
+  quantity.value = 1
+}
+
+const addToCartWithQuantity = () => {
+  for (let i = 0; i < quantity.value; i++) {
+    cartStore.addToCart(selectedProduct.value)
+  }
+  closeProductModal()
 }
 
 onMounted(() => {
@@ -316,7 +367,23 @@ section {
   line-height: 1.8;
   color: #333;
   margin-bottom: 1rem;
+  /* 使用 mixed 讓文字選擇方向為水平（從左到右） */
+  text-orientation: mixed;
 }
+
+
+/* 移除 h3 和 p 元素的 margin，減少左右間距 */
+.origin-title-group h3,
+.origin-title-group p {
+  margin: 0 !important;
+  /* padding: 0; */
+  /* 對於垂直文字，使用負的 margin-left 來減少左右間距 */
+  margin-left: -0.95rem !important;
+}
+.origin-title-group p{
+  color: #9f9f9f;
+}
+
 
 .image-grid {
   display: grid;
@@ -614,6 +681,154 @@ section {
   margin-top: 0.5rem;
 }
 
+/* --- Modal 樣式 --- */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: white;
+  width: 900px;
+  max-width: 90%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 10;
+  color: #666;
+}
+
+.modal-body {
+  display: flex;
+  padding: 40px;
+  gap: 40px;
+  overflow-y: auto;
+}
+
+.modal-image {
+  flex: 1;
+}
+
+.modal-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.modal-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.modal-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.modal-en-name {
+  color: #888;
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+
+.modal-desc {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.modal-price {
+  font-size: 1.5rem;
+  color: #6c7059;
+  font-weight: bold;
+  margin: 1rem 0 2rem;
+}
+
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  border: 1px solid #ddd;
+  width: fit-content;
+}
+
+.quantity-selector button {
+  background: none;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.quantity-selector input {
+  width: 50px;
+  text-align: center;
+  border: none;
+  font-size: 1.1rem;
+  outline: none;
+}
+
+.btn-primary-block {
+  display: block;
+  width: 100%;
+  background-color: #6c7059;
+  color: white;
+  border: none;
+  padding: 12px 0;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+}
+
+.btn-primary-block:hover {
+  background-color: #565a46;
+  box-shadow: 0 4px 12px rgba(108, 112, 89, 0.2);
+}
+
+.btn-primary-block.large {
+  padding: 15px 0;
+  font-size: 1rem;
+}
+
+/* Modal 動畫 */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
 /* 動畫 */
 @keyframes fadeInUp {
   from {
@@ -683,6 +898,11 @@ section {
   .gift-grid,
   .testimonials-slider {
     grid-template-columns: 1fr;
+  }
+
+  .modal-body {
+    flex-direction: column;
+    padding: 20px;
   }
 }
 </style>
