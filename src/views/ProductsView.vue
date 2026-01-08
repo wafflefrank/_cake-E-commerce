@@ -118,7 +118,6 @@ const filteredProducts = computed(() => {
 // 購物車邏輯
 const addToCart = (product) => {
   cartStore.addToCart(product)
-  alert(`已將 ${product.name} 加入購物車！`) // 簡單提示
 }
 
 const addToCartWithQuantity = () => {
@@ -506,6 +505,17 @@ watch(filteredProducts, async () => {
   border: none;
   font-size: 1.1rem;
   outline: none;
+  /* padding: 0;
+  margin: 0; */
+  /* box-sizing: border-box; */
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.quantity-selector input::-webkit-outer-spin-button,
+.quantity-selector input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* Modal 動畫 */

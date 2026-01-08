@@ -2,8 +2,9 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useCartStore = defineStore('cart', () => {
-  // 購物車項目
+  // 購物車項目與最近操作
   const items = ref([])
+  const lastAction = ref(null) // 'add' | 'update' | 'remove'
 
   // 計算屬性
   const totalItems = computed(() => items.value.reduce((total, item) => total + item.quantity, 0))
@@ -30,6 +31,7 @@ export const useCartStore = defineStore('cart', () => {
         quantity: quantity
       })
     }
+    lastAction.value = 'add'
   }
 
   const removeFromCart = (productId) => {
@@ -37,6 +39,7 @@ export const useCartStore = defineStore('cart', () => {
     if (index > -1) {
       items.value.splice(index, 1)
     }
+    lastAction.value = 'remove'
   }
 
   const updateQuantity = (productId, quantity) => {
@@ -47,11 +50,13 @@ export const useCartStore = defineStore('cart', () => {
       } else {
         item.quantity = quantity
       }
+      lastAction.value = 'update'
     }
   }
 
   const clearCart = () => {
     items.value = []
+    lastAction.value = 'clear'
   }
 
   const getItemQuantity = (productId) => {
@@ -61,6 +66,7 @@ export const useCartStore = defineStore('cart', () => {
 
   return {
     items,
+    lastAction,
     totalItems,
     totalPrice,
     isEmpty,

@@ -480,7 +480,7 @@ section {
 }
 
 .gift-card:hover {
-  transform: translateY(-5px);
+  /* transform: translateY(-5px); */
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
@@ -503,6 +503,27 @@ section {
   color: #8b4513;
   font-weight: bold;
   margin: 1rem 0;
+}
+
+.add-to-cart-btn {
+  display: block;
+  width: 100%;
+  background-color: #6c7059; /* 莫蘭迪綠 */
+  color: white;
+  border: none;
+  padding: 12px 0;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 5px; /* 微圓角，接近直角 */
+  margin-top: 1rem;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #565a46;
+  box-shadow: 0 4px 12px rgba(108, 112, 89, 0.2);
+  transform: translateY(-2px);
 }
 
 /* 客戶回饋 Section */

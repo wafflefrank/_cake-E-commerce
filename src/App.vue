@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <RouteLogoSplash :show="isRouteLoading" />
+    <ToastNotification v-model:show="showToast" :message="toastMessage" />
     <!-- 導航欄 -->
     <nav class="navbar" :class="{ scrolled: isScrolled }">
       <div class="nav-container">
@@ -92,7 +93,7 @@
         <div v-else>
           <div v-for="item in cartStore.items" :key="item.id" class="cart-item">
             <img :src="item.image" :alt="item.name" class="item-image" />
-            <div class="item-details">
+            <div class="item-details" style="flex: 1; min-width: 0;">
               <h4>{{ item.name }}</h4>
               <p>NT${{ item.price }}</p>
               <div class="quantity-controls">
@@ -101,7 +102,7 @@
                 <button @click="cartStore.updateQuantity(item.id, item.quantity + 1)">+</button>
               </div>
             </div>
-            <button class="remove-btn" @click="cartStore.removeFromCart(item.id)">×</button>
+            <button class="remove-btn" @click="cartStore.removeFromCart(item.id)" aria-label="刪除商品">×</button>
           </div>
         </div>
       </div>
@@ -158,8 +159,11 @@ import { ref, onMounted, watch } from 'vue'
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
 import RouteLogoSplash from '@/components/RouteLogoSplash.vue'
+import ToastNotification from '@/components/ToastNotification.vue'
+import { useToast } from '@/composables/useToast'
 
 const cartStore = useCartStore()
+const { showToast, toastMessage, triggerToast } = useToast()
 const showCart = ref(false)
 const isScrolled = ref(false)
 const isMenuOpen = ref(false)
@@ -167,6 +171,17 @@ const showBackToTop = ref(false)
 const isRouteLoading = ref(false)
 const route = useRoute()
 const router = useRouter()
+
+// 監聽購物車最近操作，僅在「新增」時顯示通知
+watch(
+  () => cartStore.lastAction,
+  (action) => {
+    if (action === 'add') {
+      triggerToast() // 使用默認訊息
+      cartStore.lastAction = null // 重置，確保後續「新增」仍會觸發
+    }
+  }
+)
 
 const toggleCart = () => {
   showCart.value = !showCart.value
@@ -495,6 +510,8 @@ router.afterEach(() => {
   gap: 1rem;
   padding: 1rem 0;
   border-bottom: 1px solid #eee;
+  position: relative;
+  align-items: flex-start;
 }
 
 .item-image {
@@ -524,6 +541,38 @@ router.afterEach(() => {
   height: 25px;
   border-radius: 50%;
   cursor: pointer;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 2rem;
+  right: 0;
+  background: #942424;
+  color: white;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(255, 68, 68, 0.3);
+  flex-shrink: 0;
+}
+
+.remove-btn:hover {
+  background: #6b1b1b;
+  transform: scale(1.1);
+  box-shadow: 0 3px 6px rgba(255, 68, 68, 0.4);
+}
+
+.remove-btn:active {
+  transform: scale(0.95);
 }
 
 .cart-footer {
