@@ -127,12 +127,16 @@
             <div class="contact-item">
               <div class="contact-icon">📱</div>
               <h3>Instagram</h3>
-              <p>@iiincookie</p>
+              <p>
+                <a href="https://www.instagram.com/iiincookie/" target="_blank" rel="noopener noreferrer">@iiincookie</a>
+              </p>
             </div>
             <div class="contact-item">
               <div class="contact-icon">📧</div>
               <h3>Email</h3>
-              <p>info@iiincookie.com</p>
+              <p>
+                <a href="mailto:info@iiincookie.com">info@iiincookie.com</a>
+              </p>
             </div>
             <div class="contact-item">
               <div class="contact-icon">⏰</div>
@@ -447,6 +451,22 @@ onMounted(() => {
 }
 
 .contact-item:hover p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.contact-item a {
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.contact-item a:hover {
+  border-bottom-color: currentColor;
+  opacity: 0.8;
+}
+
+.contact-item:hover a {
   color: rgba(255, 255, 255, 0.9);
 }
 
