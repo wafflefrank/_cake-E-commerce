@@ -184,14 +184,14 @@ onMounted(() => {
 
 .hero-title {
   font-size: 3rem;
-  color: #8b4513;
+  color: #6c7059;
   margin-bottom: 1rem;
   animation: fadeInUp 1s ease;
 }
 
 .hero-subtitle {
   font-size: 1.5rem;
-  color: #a0522d;
+  color: #6c7059;
   animation: fadeInUp 1s ease 0.2s both;
 }
 
@@ -210,7 +210,7 @@ onMounted(() => {
 
 .story-text h2 {
   font-size: 2.5rem;
-  color: #8b4513;
+  color: #6c7059;
   margin-bottom: 2rem;
 }
 
@@ -237,7 +237,7 @@ onMounted(() => {
 
 .section-title {
   font-size: 2.5rem;
-  color: #8b4513;
+  color: #6c7059;
   text-align: center;
   margin-bottom: 3rem;
 }
@@ -276,7 +276,7 @@ onMounted(() => {
 
 .philosophy-item h3 {
   font-size: 1.5rem;
-  color: #8b4513;
+  color: #6c7059;
   margin-bottom: 1rem;
 }
 
@@ -315,13 +315,13 @@ onMounted(() => {
 }
 
 .step:hover {
-  background: #8b4513;
+  background: #6c7059;
   color: white;
   transform: translateY(-5px);
 }
 
 .step-number {
-  background: #8b4513;
+  background: #6c7059;
   color: white;
   width: 50px;
   height: 50px;
@@ -336,7 +336,7 @@ onMounted(() => {
 
 .step:hover .step-number {
   background: white;
-  color: #8b4513;
+  color: #6c7059;
 }
 
 .step-content h3 {
@@ -395,7 +395,7 @@ onMounted(() => {
 
 .author-name {
   font-weight: bold;
-  color: #8b4513;
+  color: #6c7059;
 }
 
 .rating {
@@ -430,7 +430,7 @@ onMounted(() => {
 }
 
 .contact-item:hover {
-  background: #8b4513;
+  background: #6c7059;
   color: white;
   transform: translateY(-5px);
 }

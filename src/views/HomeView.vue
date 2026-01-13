@@ -7,7 +7,7 @@
           <h2
             class="fs-md-1 fs-3 ms-6 fw-medium letterSpace-32 text-light banner-text_title font-serifTc"
           >
-            餅乾生產餡
+            鬆餅屋
           </h2>
           <h2 class="fs-md-2 fs-4 fw-medium letterSpace-16 text-light font-serifTc banner__text">
             呈現最驚豔的味
@@ -21,8 +21,8 @@
         <div class="origin-content" data-aos="fade">
           <div class="origin-images" data-aos="fade-up">
             <div class="image-grid" style="align-items: center; justify-items: center">
-              <img src="/src/assets/images/boxflower-index.JPG" alt="" />
-              <img src="/src/assets/images/indexswitchbox.JPG" alt="" />
+              <img src="/src/assets/images/waffle_1.jpg" alt="" />
+              <img src="/src/assets/images/waffle_2.jpg" alt="" />
             </div>
           </div>
           <div class="origin-text d-flex gap-4">
@@ -262,7 +262,7 @@ section {
 
 .hero-title {
   font-size: 4rem;
-  color: #8b4513;
+  color: #6c7059;
   margin-bottom: 1rem;
   font-weight: 300;
   letter-spacing: 2px;
@@ -272,7 +272,7 @@ section {
 
 .hero-subtitle {
   font-size: 1.8rem;
-  color: #a0522d;
+  color: #6c7059;
   margin-bottom: 2rem;
   font-weight: 400;
   letter-spacing: 1px;
@@ -280,7 +280,7 @@ section {
 }
 
 .cta-btn {
-  background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%);
+  background: linear-gradient(135deg, #6c7059 0%, #565a46 100%);
   color: white;
   border: none;
   padding: 1.2rem 2.5rem;
@@ -292,7 +292,7 @@ section {
   animation: fadeInUp 1s ease 0.4s both;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 25px rgba(139, 69, 19, 0.3);
+  box-shadow: 0 8px 25px rgba(108, 112, 89, 0.3);
 }
 
 .cta-btn::before {
@@ -311,9 +311,9 @@ section {
 }
 
 .cta-btn:hover {
-  background: linear-gradient(135deg, #a0522d 0%, #8b4513 100%);
+  background: linear-gradient(135deg, #565a46 0%, #6c7059 100%);
   transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 12px 35px rgba(139, 69, 19, 0.4);
+  box-shadow: 0 12px 35px rgba(108, 112, 89, 0.4);
 }
 
 .hero-image {
@@ -337,7 +337,7 @@ section {
 
 .section-title {
   font-size: 2.5rem;
-  color: #8b4513;
+  color: #6c7059;
   text-align: center;
   margin-bottom: 1rem;
 }
@@ -424,7 +424,7 @@ section {
   opacity: 0;
   /* transform: translateY(30px); */
   position: relative;
-  border: 1px solid rgba(139, 69, 19, 0.1);
+  border: 1px solid rgba(108, 112, 89, 0.1);
 }
 
 .product-card::before {
@@ -434,7 +434,7 @@ section {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #8b4513, #a0522d, #8b4513);
+  background: linear-gradient(90deg, #6c7059, #565a46, #6c7059);
   opacity: 0;
   transition: opacity 0.15s ease;
 }
@@ -450,8 +450,8 @@ section {
 
 .product-card:hover {
   /* transform: translateY(-5px); */
-  box-shadow: 0 20px 40px rgba(139, 69, 19, 0.15);
-  border-color: rgba(139, 69, 19, 0.2);
+  box-shadow: 0 20px 40px rgba(108, 112, 89, 0.15);
+  border-color: rgba(108, 112, 89, 0.2);
 }
 
 .product-image {
@@ -522,7 +522,7 @@ section {
 
 .product-price {
   font-size: 1.2rem;
-  color: #8b4513;
+  color: #6c7059;
   font-weight: bold;
 }
 
@@ -567,7 +567,7 @@ section {
 
 .gift-price {
   font-size: 1.2rem;
-  color: #8b4513;
+  color: #6c7059;
   font-weight: bold;
   margin: 1rem 0;
 }
@@ -617,7 +617,7 @@ section {
 .testimonials-pagination .swiper-pagination-bullet {
   width: 12px;
   height: 12px;
-  background: #8b4513;
+  background: #6c7059;
   opacity: 0.3;
   margin: 0 5px;
   border-radius: 50%;
@@ -644,7 +644,7 @@ section {
 
 .testimonials-prev,
 .testimonials-next {
-  background: #8b4513;
+  background: #6c7059;
   color: white;
   border: none;
   width: 50px;
@@ -661,7 +661,7 @@ section {
 
 .testimonials-prev:hover,
 .testimonials-next:hover {
-  background: #a0522d;
+  background: #565a46;
   transform: scale(1.1);
 }
 
@@ -695,7 +695,7 @@ section {
 
 .author-name {
   font-weight: bold;
-  color: #8b4513;
+  color: #6c7059;
 }
 
 .rating {

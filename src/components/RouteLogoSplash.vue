@@ -6,7 +6,7 @@ defineProps({ show: { type: Boolean, default: false } })
 <template>
   <transition name="splash-fade">
     <div v-if="show" class="splash-overlay">
-      <div class="splash-logo font-serifTc">餅乾生產餡</div>
+      <div class="splash-logo font-serifTc">Waffle & Tea</div>
     </div>
   </transition>
 </template>

@@ -30,7 +30,7 @@
 
               <div class="logo-text">
                 <span class="logo-en">Waffle</span>
-                <span class="logo-zh">甜點之家</span>
+                <span class="logo-zh">鬆餅屋</span>
               </div>
             </div>
           </RouterLink>
@@ -373,7 +373,7 @@ router.afterEach(() => {
 }
 
 .nav-link:hover {
-  color: #8b4513;
+  color: #6c7059;
 }
 
 .nav-link::after {
@@ -383,7 +383,7 @@ router.afterEach(() => {
   right: 0;
   bottom: -6px;
   height: 2px;
-  background: #8b4513;
+  background: #6c7059;
   transform: scaleX(0);
   transform-origin: center;
   transition: transform 0.2s ease;
@@ -395,13 +395,13 @@ router.afterEach(() => {
 }
 
 .nav-link.router-link-active {
-  color: #8b4513;
+  color: #6c7059;
 }
 
 .icon-btn {
   background: transparent;
   border: none;
-  color: #8b4513;
+  color: #6c7059;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -549,7 +549,7 @@ router.afterEach(() => {
 }
 
 .quantity-controls button {
-  background: #8b4513;
+  background: #6c7059;
   color: white;
   border: none;
   width: 25px;
@@ -597,7 +597,7 @@ router.afterEach(() => {
 
 .checkout-btn {
   width: 100%;
-  background: #8b4513;
+  background: #6c7059;
   color: white;
   border: none;
   padding: 1rem;
@@ -636,7 +636,7 @@ router.afterEach(() => {
 
 .footer-section h3,
 .footer-section h4 {
-  color: #8b4513;
+  color: #6c7059;
   margin-bottom: 1rem;
 }
 
@@ -656,18 +656,18 @@ router.afterEach(() => {
 }
 
 .footer-section ul li a:hover {
-  color: #8b4513;
+  color: #6c7059;
 }
 
 .footer-section p a {
-  color: #8b4513;
+  color: #6c7059;
   text-decoration: none;
   transition: all 0.3s ease;
   border-bottom: 1px solid transparent;
 }
 
 .footer-section p a:hover {
-  border-bottom-color: #8b4513;
+  border-bottom-color: #6c7059;
   opacity: 0.8;
 }
 
@@ -723,11 +723,11 @@ router.afterEach(() => {
 }
 
 .back-to-top-btn:hover .back-to-top-text {
-  color: #8b4513;
+  color: #6c7059;
 }
 
 .back-to-top-btn:hover .back-to-top-line {
-  background: #8b4513;
+  background: #6c7059;
   height: 30px;
 }
 
@@ -758,6 +758,6 @@ html::-webkit-scrollbar-thumb {
 }
 
 html::-webkit-scrollbar-thumb:hover {
-  background: #8b4513; /* 滑鼠懸停時使用主題色 */
+  background: #6c7059; /* 滑鼠懸停時使用主題色 */
 }
 </style>

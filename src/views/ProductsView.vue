@@ -15,7 +15,7 @@
               v-for="category in categories"
               :key="category.id"
               :class="['category-btn', { active: selectedCategory === category.id }]"
-              @click="selectedCategory = category.id"
+              @click="handleCategoryChange(category.id)"
             >
               {{ category.name }}
             </button>
@@ -25,15 +25,28 @@
 
       <section class="products-section">
         <div class="container">
-          <transition-group name="fade" tag="div" class="products-grid">
+          <div v-if="isTransitioning && displayProducts.length === 0" class="products-grid products-grid-empty">
+            <!-- 過渡期間顯示空狀態 -->
+          </div>
+          <transition-group 
+            v-else
+            name="list" 
+            tag="div" 
+            class="products-grid"
+          >
             <div
-              v-for="product in filteredProducts"
-              :key="product.id"
+              v-for="product in displayProducts"
+              :key="`${selectedCategory}-${product.id}`"
               class="product-card"
               @click="openProductModal(product)"
             >
               <div class="product-image-wrapper">
-                <img :src="product.image" :alt="product.name" />
+                <img 
+                  :src="product.image" 
+                  :alt="product.name"
+                  @load="handleImageLoad"
+                  @error="handleImageError"
+                />
                 <div class="hover-overlay">
                   <span>more detail</span>
                 </div>
@@ -97,14 +110,15 @@ const cartStore = useCartStore()
 const selectedProduct = ref(null)
 const quantity = ref(1)
 const selectedCategory = ref('all')
+const isTransitioning = ref(false)
+const displayProducts = ref([])
 
 // 模擬分類資料
 const categories = [
   { id: 'all', name: '全部商品' },
-  { id: '夾餡餅乾', name: '夾餡餅乾' },
-  { id: '造型餅乾', name: '造型餅乾' },
-  { id: '鹹味餅乾', name: '鹹味餅乾' },
-  { id: '經典餅乾', name: '經典餅乾' }
+  { id: '精緻鬆餅', name: '精緻鬆餅' },
+  { id: '造型蛋糕', name: '造型蛋糕' },
+  { id: '經典甜點', name: '經典甜點' }
 ]
 
 // 過濾邏輯
@@ -112,8 +126,48 @@ const filteredProducts = computed(() => {
   if (selectedCategory.value === 'all') {
     return productsStore.products
   }
-  return productsStore.products.filter((product) => product.category === selectedCategory.value)
+  const filtered = productsStore.products.filter((product) => product.category === selectedCategory.value)
+  return filtered
 })
+
+// 處理分類切換
+const handleCategoryChange = async (categoryId) => {
+  // 如果點擊的是當前分類，不處理
+  if (selectedCategory.value === categoryId) return
+  
+  // 開始過渡，立即清空顯示的商品
+  isTransitioning.value = true
+  displayProducts.value = []
+  
+  // 等待 DOM 完全清空
+  await nextTick()
+  // 額外等待確保所有元素已從 DOM 移除
+  await new Promise((resolve) => setTimeout(resolve, 100))
+  
+  // 更新分類
+  selectedCategory.value = categoryId
+  
+  // 計算新的商品列表
+  let newProducts = []
+  if (selectedCategory.value === 'all') {
+    newProducts = [...productsStore.products]
+  } else {
+    newProducts = productsStore.products.filter((product) => product.category === selectedCategory.value)
+  }
+  
+  // 再次等待確保分類已更新
+  await nextTick()
+  
+  // 設置新的商品列表
+  displayProducts.value = newProducts
+  
+  // 等待新商品渲染
+  await nextTick()
+  await new Promise((resolve) => setTimeout(resolve, 50))
+  
+  // 結束過渡
+  isTransitioning.value = false
+}
 
 // 購物車邏輯
 const addToCart = (product) => {
@@ -135,6 +189,15 @@ const openProductModal = (product) => {
 const closeProductModal = () => {
   selectedProduct.value = null
   quantity.value = 1
+}
+
+// 圖片載入處理
+const handleImageLoad = (event) => {
+  event.target.style.opacity = '1'
+}
+
+const handleImageError = (event) => {
+  event.target.style.opacity = '0.5'
 }
 
 // --- 動畫偵測邏輯 (已修復) ---
@@ -161,16 +224,22 @@ const setupObserver = () => {
 }
 
 onMounted(() => {
+  // 初始化顯示所有商品
+  displayProducts.value = productsStore.products
   setupObserver()
 })
 
-// 關鍵修復：監聽 filteredProducts 的變化
-watch(filteredProducts, async () => {
-  // 等待 Vue 更新完 DOM (畫面元素)
-  await nextTick()
-  // 重新綁定動畫偵測
-  setupObserver()
-})
+// 監聽商品列表變化，重新設置 observer
+watch(
+  () => displayProducts.value,
+  async () => {
+    if (!isTransitioning.value) {
+      await nextTick()
+      setupObserver()
+    }
+  },
+  { deep: true }
+)
 </script>
 
 <style scoped>
@@ -281,6 +350,11 @@ watch(filteredProducts, async () => {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 3rem 2rem; /* 增加間距讓畫面呼吸 */
   padding-bottom: 4rem;
+  position: relative;
+}
+
+.products-grid-empty {
+  min-height: 400px; /* 避免高度跳動 */
 }
 
 /* --- Product Card (核心修改) --- */
@@ -288,12 +362,6 @@ watch(filteredProducts, async () => {
   background: transparent; /* 移除白色背景卡片感，讓圖片突出 */
   cursor: pointer;
   transition: transform 0.4s ease;
-  opacity: 0; /* 配合 Observer 做進場動畫 */
-}
-
-.product-card.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .product-card:hover {
@@ -317,7 +385,8 @@ watch(filteredProducts, async () => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s ease;
+  transition: transform 0.6s ease, opacity 0.3s ease;
+  opacity: 0;
 }
 
 /* 簡約遮罩 */
@@ -516,6 +585,31 @@ watch(filteredProducts, async () => {
 .quantity-selector input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+/* 列表過渡動畫 */
+.list-enter-active {
+  transition: all 0.5s ease;
+}
+
+.list-leave-active {
+  transition: all 0.3s ease;
+  position: absolute;
+  width: 100%;
+}
+
+.list-enter-from {
+  opacity: 0;
+  transform: translateY(30px) scale(0.9);
+}
+
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(-30px) scale(0.9);
+}
+
+.list-move {
+  transition: transform 0.5s ease;
 }
 
 /* Modal 動畫 */
