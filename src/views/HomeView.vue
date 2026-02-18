@@ -2,8 +2,80 @@
   <div>
     <main>
       <!-- banner start -->
-      <div class="banner orign" data-aos="fade" data-aos-duration="2000">
-        <div class="pos-absolute top-20p end-12p vertical-rl">
+      <div class="banner-wrapper" data-aos="fade" data-aos-duration="2000">
+        <div
+          id="bannerCarousel"
+          class="carousel slide carousel-fade"
+          data-bs-ride="carousel"
+          data-bs-interval="4000"
+        >
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <div
+                class="banner-slide"
+                style="background-image: url('/src/assets/images/banner_homePage_upscayl_4x.jpg')"
+              ></div>
+            </div>
+            <div class="carousel-item">
+              <div
+                class="banner-slide"
+                style="background-image: url('/src/assets/images/banner_waffle.jpg')"
+              ></div>
+            </div>
+            <!-- 如果需要第三張圖片，可以在這裡添加 -->
+            <!-- <div class="carousel-item">
+              <div
+                class="banner-slide"
+                style="background-image: url('/src/assets/images/banner_third.jpg')"
+              ></div>
+            </div> -->
+          </div>
+          <!-- 輪播控制按鈕（可選） -->
+          <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#bannerCarousel"
+            data-bs-slide="prev"
+          >
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#bannerCarousel"
+            data-bs-slide="next"
+          >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+          <!-- 輪播指示器（可選） -->
+          <div class="carousel-indicators">
+            <button
+              type="button"
+              data-bs-target="#bannerCarousel"
+              data-bs-slide-to="0"
+              class="active"
+              aria-current="true"
+              aria-label="Slide 1"
+            ></button>
+            <button
+              type="button"
+              data-bs-target="#bannerCarousel"
+              data-bs-slide-to="1"
+              aria-label="Slide 2"
+            ></button>
+            <!-- 如果有第三張圖片，添加第三個指示器 -->
+            <!-- <button
+              type="button"
+              data-bs-target="#bannerCarousel"
+              data-bs-slide-to="2"
+              aria-label="Slide 3"
+            ></button> -->
+          </div>
+        </div>
+        <!-- 文字內容覆蓋在輪播上方 -->
+        <div class="pos-absolute top-20p end-12p vertical-rl banner-text-overlay">
           <h2
             class="fs-md-1 fs-3 ms-6 fw-medium letterSpace-32 text-light banner-text_title font-serifTc"
           >
@@ -219,11 +291,81 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.banner.orign {
-  background: url('/src/assets/images/banner_waffle.jpg') center/cover no-repeat;
-  height: 50vh; /* 仍然建議設定一個高度 */
-  /* 建議設定一個背景色來填補可能的空白處 */
+/* Banner 輪播容器 */
+.banner-wrapper {
+  position: relative;
+  height: 65vh;
+  overflow: hidden;
   background-color: #fdfaf5;
+}
+
+/* 輪播容器 */
+#bannerCarousel {
+  height: 100%;
+}
+
+.carousel-inner {
+  height: 100%;
+}
+
+.carousel-item {
+  height: 100%;
+}
+
+/* 輪播圖片背景 */
+.banner-slide {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 文字內容覆蓋層 */
+.banner-text-overlay {
+  position: absolute;
+  top: 20%;
+  right: 12%;
+  z-index: 10;
+  pointer-events: none; /* 讓文字不阻擋輪播控制 */
+}
+
+/* 輪播控制按鈕樣式調整 */
+.carousel-control-prev,
+.carousel-control-next {
+  z-index: 5;
+  width: 5%;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+.carousel-control-prev-icon:hover,
+.carousel-control-next-icon:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* 輪播指示器樣式調整 */
+.carousel-indicators {
+  z-index: 5;
+  margin-bottom: 1rem;
+}
+
+.carousel-indicators button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.carousel-indicators button.active {
+  background-color: rgba(255, 255, 255, 0.9);
 }
 /* 錨點捲動對齊導覽列高度，避免被遮或留白 */
 section {
@@ -813,6 +955,14 @@ section {
   border: none;
   font-size: 1.1rem;
   outline: none;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.quantity-selector input::-webkit-outer-spin-button,
+.quantity-selector input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .btn-primary-block {

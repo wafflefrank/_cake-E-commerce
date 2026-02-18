@@ -39,14 +39,22 @@
           <button class="hamburger" aria-label="menu" @click="isMenuOpen = !isMenuOpen">
             <span></span><span></span><span></span>
           </button>
-          <div class="nav-links" :class="{ 'is-open': isMenuOpen }">
+          <div 
+            class="nav-links" 
+            :class="{ 'is-open': isMenuOpen }"
+            @mouseleave="handleMenuMouseLeave"
+          >
             <RouterLink to="/products" class="nav-link">商品</RouterLink>
             <RouterLink to="/about" class="nav-link">關於</RouterLink>
-            <!-- 假設您有 FAQ 和客製化頁面的路由 -->
             <RouterLink to="/faq" class="nav-link">FAQ</RouterLink>
-            <RouterLink to="/custom" class="nav-link">鐵盒訂製</RouterLink>
           </div>
-          <button class="icon-btn ms-3" aria-label="account">
+          <!-- 登入後顯示使用者名稱 -->
+          <div v-if="authStore.isAuthenticated" class="user-info">
+            <span class="username">{{ authStore.user.name }}</span>
+            <button class="logout-btn" @click="handleLogout" aria-label="登出">登出</button>
+          </div>
+          <!-- 未登入顯示帳戶圖標 -->
+          <button v-else class="icon-btn ms-3" aria-label="account" @click="showAuthModal = true">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="32"
@@ -110,7 +118,7 @@
         <div class="cart-total">
           <p>總計: NT${{ cartStore.totalPrice }}</p>
         </div>
-        <button class="checkout-btn">來結帳囉</button>
+        <RouterLink to="/checkout" class="checkout-btn" @click="toggleCart">來結帳囉</RouterLink>
       </div>
     </div>
 
@@ -124,7 +132,7 @@
       <div class="container">
         <div class="footer-content">
           <div class="footer-section">
-            <h3>餅乾生產餡</h3>
+            <h3>餅乾茶屋</h3>
             <p>呈現最驚豔的味</p>
           </div>
           <div class="footer-section">
@@ -139,12 +147,12 @@
             <h4>聯絡我們</h4>
             <p>
               Instagram: 
-              <a href="https://www.instagram.com/iiincookie/" target="_blank" rel="noopener noreferrer">@iiincookie</a>
+              <a href="https://www.instagram.com/yurayou.yu/" target="_blank" rel="noopener noreferrer">@yurayou.yu</a>
             </p>
           </div>
         </div>
         <div class="footer-bottom">
-          <p>Copyright © 2022 餅乾生產餡.</p>
+          <p>Copyright © 2025 鬆餅茶屋</p>
         </div>
       </div>
     </footer>
@@ -154,6 +162,14 @@
       <span class="back-to-top-text">page top</span>
       <span class="back-to-top-line"></span>
     </button>
+
+    <!-- 登入/註冊模態框 -->
+    <AuthModal 
+      :show="showAuthModal" 
+      @close="showAuthModal = false" 
+      @success="handleAuthSuccess"
+      @register-success="handleRegisterSuccess"
+    />
   </div>
 </template>
 
@@ -161,13 +177,17 @@
 import { ref, onMounted, watch, nextTick } from 'vue'
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
+import { useAuthStore } from '@/stores/auth'
 import RouteLogoSplash from '@/components/RouteLogoSplash.vue'
 import ToastNotification from '@/components/ToastNotification.vue'
+import AuthModal from '@/components/AuthModal.vue'
 import { useToast } from '@/composables/useToast'
 
 const cartStore = useCartStore()
+const authStore = useAuthStore()
 const { showToast, toastMessage, triggerToast } = useToast()
 const showCart = ref(false)
+const showAuthModal = ref(false)
 const isScrolled = ref(false)
 const isMenuOpen = ref(false)
 const showBackToTop = ref(false)
@@ -190,6 +210,14 @@ const toggleCart = () => {
   showCart.value = !showCart.value
 }
 
+const handleMenuMouseLeave = () => {
+  // 只在手機模式下（選單展開時）才自動收合
+  // 使用 window.innerWidth 判斷是否為手機模式
+  if (window.innerWidth <= 768 && isMenuOpen.value) {
+    isMenuOpen.value = false
+  }
+}
+
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
@@ -205,7 +233,25 @@ onMounted(() => {
   }
   window.addEventListener('scroll', onScroll, { passive: true })
   checkScrollPosition()
+  
+  // 恢復使用者登入狀態
+  authStore.restoreUser()
 })
+
+const handleAuthSuccess = () => {
+  // 登入成功後的處理
+  triggerToast('歡迎回來！')
+}
+
+const handleRegisterSuccess = () => {
+  // 註冊成功後的處理，顯示帶打勾圖標的成功提示
+  triggerToast('註冊成功！')
+}
+
+const handleLogout = () => {
+  authStore.logout()
+  triggerToast('已成功登出')
+}
 
 // 監聽路由變化，自動關閉手機版選單
 watch(
@@ -217,8 +263,9 @@ watch(
 
 // 監聽路由變化，顯示/隱藏過場動畫
 router.beforeEach(async (to, from, next) => {
-  // 僅在實際切換頁面時觸發 (from.name 存在)，避免首次載入時觸發
-  if (from.name) {
+  // 僅在實際切換頁面時觸發（from.path !== to.path），避免重新整理時觸發
+  // 重新整理時 from.path === to.path，所以不會觸發
+  if (from.path && from.path !== to.path) {
     // 立即顯示動畫遮罩，隱藏內容（在路由切換前）
     // 使用 nextTick 確保 DOM 更新完成
     isRouteLoading.value = true
@@ -233,14 +280,14 @@ router.beforeEach(async (to, from, next) => {
   next()
 })
 
-router.afterEach(() => {
+router.afterEach((to, from) => {
   // 等待動畫完成後才隱藏遮罩並顯示新頁面內容
   // logoIn 動畫：1200ms + 100ms delay = 1300ms，加上過渡效果 500ms，總共約 1800ms
   // 但為了確保動畫完全結束，我們等待足夠的時間
   setTimeout(() => {
     isRouteLoading.value = false
-    // 再次確保滾動到頂部（在動畫完成後）
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    // 移除滾動邏輯，讓 scrollBehavior 統一處理滾動行為
+    // 這樣可以避免重新整理時不必要的滾動
   }, 1000) // 確保動畫完全結束後才顯示新頁面
 })
 </script>
@@ -376,6 +423,37 @@ router.afterEach(() => {
   color: #6c7059;
 }
 
+/* 使用者資訊樣式 */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: 'Noto Sans TC', sans-serif;
+}
+
+.username {
+  font-size: 0.95rem;
+  color: #4a4a4a;
+  font-weight: 500;
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid #6c7059;
+  color: #6c7059;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: #6c7059;
+  color: white;
+}
+
 .nav-link::after {
   content: '';
   position: absolute;
@@ -443,6 +521,21 @@ router.afterEach(() => {
 }
 
 @media (max-width: 768px) {
+  .user-info {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .username {
+    font-size: 0.85rem;
+  }
+
+  .logout-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
   .hamburger {
     display: inline-flex;
     flex-direction: column;
@@ -605,6 +698,16 @@ router.afterEach(() => {
   cursor: pointer;
   font-size: 1rem;
   margin-top: 1rem;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  font-family: 'Noto Sans TC', sans-serif;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.checkout-btn:hover {
+  background: #565a46;
 }
 
 @media (max-width: 768px) {
@@ -636,7 +739,7 @@ router.afterEach(() => {
 
 .footer-section h3,
 .footer-section h4 {
-  color: #6c7059;
+  color: #8b5e3c;
   margin-bottom: 1rem;
 }
 
@@ -660,7 +763,7 @@ router.afterEach(() => {
 }
 
 .footer-section p a {
-  color: #6c7059;
+  color: #8b5e3c;
   text-decoration: none;
   transition: all 0.3s ease;
   border-bottom: 1px solid transparent;

@@ -9,6 +9,12 @@
   </head>
   <body>
     <div id="app"></div>
+    <script>
+      // 設置為 auto，讓瀏覽器自動恢復重新整理前的滾動位置
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'auto';
+      }
+    </script>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

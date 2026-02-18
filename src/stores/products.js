@@ -90,7 +90,7 @@ export const useProductsStore = defineStore('products', () => {
       name: '精緻禮袋',
       nameEn: 'Elegant Gift Bag',
       price: 200,
-      image: '/src/assets/images/rectangel/littelbag.JPG',
+      image: '/src/assets/images/boxPackage_1.jpg',
       description: '一人一包獨享剛剛好',
       category: '禮盒',
       inStock: true
@@ -100,7 +100,7 @@ export const useProductsStore = defineStore('products', () => {
       name: '紙盒禮盒',
       nameEn: 'Paper Gift Box',
       price: 400,
-      image: '/src/assets/images/rectangel/woodbox.jpg',
+      image: '/src/assets/images/boxPackage_2.jpg',
       description: '三五好友聊天的好選擇',
       category: '禮盒',
       inStock: true
@@ -110,7 +110,7 @@ export const useProductsStore = defineStore('products', () => {
       name: '鐵盒禮盒',
       nameEn: 'Metal Gift Box',
       price: 600,
-      image: '/src/assets/images/rectangel/大鐵盒正方形.jpg',
+      image: '/src/assets/images/boxPackage_3.jpg',
       description: '送禮最佳質感挑這盒',
       category: '禮盒',
       inStock: true

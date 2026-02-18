@@ -2,11 +2,11 @@
   <div class="about">
     <!-- 主內容 -->
     <main>
-      <!-- Hero Section -->
-      <section class="about-hero">
+      <!-- Page Header -->
+      <section class="page-header">
         <div class="container">
-          <h1 class="hero-title">關於 iiincookie</h1>
-          <p class="hero-subtitle">呈現最驚豔的味</p>
+          <span class="sub-title">About</span>
+          <h1 class="main-title">關於 鬆餅茶屋</h1>
         </div>
       </section>
 
@@ -17,14 +17,10 @@
             <div class="story-text">
               <h2>品牌故事</h2>
               <div class="story-paragraphs">
-                <p>因緣際會幫忙朋友製作了餅乾，</p>
-                <p>變想要挑戰鐵盒餅乾，</p>
-                <p>朋友一吃驚艷，鼓勵我讓大家也能，</p>
-                <p>吃得到這美味的夾餡餅乾</p>
-                <p>變誤打誤撞開始生產餡這個品牌</p>
-                <p>從沒想過餅乾會成為另一個事業，</p>
-                <p>也希望每次你們收到餅乾時，</p>
-                <p>看到包裝的花材時能感到暖心。</p>
+                <p>因為本身喜歡吃鬆餅，</p>
+                <p>起初只是各種探店，</p>
+                <p>時間一久，吃出心得,想要自己動手做來試試</p>
+                <p>希望將自身的心得分享給大家</p>
               </div>
             </div>
             <div class="story-image">
@@ -128,14 +124,14 @@
               <div class="contact-icon">📱</div>
               <h3>Instagram</h3>
               <p>
-                <a href="https://www.instagram.com/iiincookie/" target="_blank" rel="noopener noreferrer">@iiincookie</a>
+                <a href="https://www.instagram.com/yurayou.yu/" target="_blank" rel="noopener noreferrer">@yurayou.yu</a>
               </p>
             </div>
             <div class="contact-item">
               <div class="contact-icon">📧</div>
               <h3>Email</h3>
               <p>
-                <a href="mailto:info@iiincookie.com">info@iiincookie.com</a>
+                <a href="mailto:info@iiincookie.com">wafflecake@gmail.com</a>
               </p>
             </div>
             <div class="contact-item">
@@ -175,24 +171,29 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* About Hero */
-.about-hero {
-  background: linear-gradient(135deg, #f5f5dc 0%, #ffe4b5 100%);
-  padding: 8rem 0 4rem;
+/* Page Header */
+.page-header {
+  padding: 2rem 0 1rem;
   text-align: center;
 }
 
-.hero-title {
-  font-size: 3rem;
-  color: #6c7059;
-  margin-bottom: 1rem;
-  animation: fadeInUp 1s ease;
+.sub-title {
+  display: block;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  color: #888;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
 }
 
-.hero-subtitle {
-  font-size: 1.5rem;
-  color: #6c7059;
-  animation: fadeInUp 1s ease 0.2s both;
+.main-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #4a4a4a;
+  letter-spacing: 3px;
+  margin: 0;
 }
 
 /* 品牌故事 */
@@ -499,7 +500,7 @@ onMounted(() => {
     display: none;
   }
 
-  .hero-title {
+  .main-title {
     font-size: 2rem;
   }
 
