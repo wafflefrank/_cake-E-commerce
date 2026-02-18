@@ -54,8 +54,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  base: '/' // 將 <REPO_NAME> 替換為你的 GitHub repository 名稱
-  // base: '/Daga-homePage/' // 將 <REPO_NAME> 替換為你的 GitHub repository 名稱
+  base: '/_cake-E-commerce/' // GitHub Pages 子路徑（必須與 repository 名稱一致）
   // build: {
   //   outDir: 'dist',
   //   assetsDir: 'assets',
