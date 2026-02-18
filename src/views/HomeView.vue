@@ -13,20 +13,20 @@
             <div class="carousel-item active">
               <div
                 class="banner-slide"
-                style="background-image: url('/src/assets/images/banner_homePage_upscayl_4x.jpg')"
+                :style="{ backgroundImage: `url(${getPublicUrl('images/banner_homePage_upscayl_4x.jpg')})` }"
               ></div>
             </div>
             <div class="carousel-item">
               <div
                 class="banner-slide"
-                style="background-image: url('/src/assets/images/banner_waffle.jpg')"
+                :style="{ backgroundImage: `url(${getPublicUrl('images/banner_waffle.jpg')})` }"
               ></div>
             </div>
             <!-- 如果需要第三張圖片，可以在這裡添加 -->
             <!-- <div class="carousel-item">
               <div
                 class="banner-slide"
-                style="background-image: url('/src/assets/images/banner_third.jpg')"
+                :style="{ backgroundImage: `url(${getPublicUrl('images/banner_third.jpg')})` }"
               ></div>
             </div> -->
           </div>
@@ -93,8 +93,8 @@
         <div class="origin-content" data-aos="fade">
           <div class="origin-images" data-aos="fade-up">
             <div class="image-grid" style="align-items: center; justify-items: center">
-              <img src="/src/assets/images/waffle_1.jpg" alt="" />
-              <img src="/src/assets/images/waffle_2.jpg" alt="" />
+              <img :src="getPublicUrl('images/waffle_1.jpg')" alt="" />
+              <img :src="getPublicUrl('images/waffle_2.jpg')" alt="" />
             </div>
           </div>
           <div class="origin-text d-flex gap-4">
@@ -238,6 +238,7 @@ import { useProductsStore } from '@/stores/products'
 import { useCartStore } from '@/stores/cart'
 import { useAnimations } from '@/composables/useAnimations'
 import { useSimpleSwiper } from '@/composables/useSimpleSwiper'
+import { getPublicUrl } from '@/utils/getPublicUrl'
 
 const productsStore = useProductsStore()
 const cartStore = useCartStore()

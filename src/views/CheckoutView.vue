@@ -239,7 +239,7 @@
             感謝您的訂購,我們會盡快出貨,希望你會喜歡,如有任何疑問可私訊我們~
           </p>
           <div class="success-image">
-            <img src="/src/assets/images/paysuccess.png" alt="付款成功" />
+            <img :src="getPublicUrl('images/paysuccess.png')" alt="付款成功" />
           </div>
           <div class="success-actions">
             <RouterLink to="/products" class="back-to-shop-btn">繼續購物</RouterLink>
@@ -255,6 +255,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart'
+import { getPublicUrl } from '@/utils/getPublicUrl'
 
 const router = useRouter()
 const cartStore = useCartStore()

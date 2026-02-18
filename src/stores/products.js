@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { getPublicUrl } from '@/utils/getPublicUrl'
 
 export const useProductsStore = defineStore('products', () => {
   // 商品資料
@@ -9,7 +10,7 @@ export const useProductsStore = defineStore('products', () => {
       name: '伯爵巧克力夾餡',
       nameEn: 'Earl Grey Chocolate Sandwich',
       price: 350,
-      image: '/src/assets/images/cake_1.jpg',
+      image: getPublicUrl('images/cake_1.jpg'),
       description: '濃郁的伯爵茶香搭配絲滑巧克力，每一口都是驚喜',
       category: '經典甜點',
       inStock: true,
@@ -20,7 +21,7 @@ export const useProductsStore = defineStore('products', () => {
       name: '焦糖布丁',
       nameEn: 'Caramel Pudding',
       price: 190,
-      image: '/src/assets/images/cake_2.jpg',
+      image: getPublicUrl('images/cake_2.jpg'),
       description: '精緻造型的壓模餅乾，口感酥脆香濃',
       category: '經典甜點',
       inStock: true,
@@ -31,7 +32,7 @@ export const useProductsStore = defineStore('products', () => {
       name: '經典馬卡龍',
       nameEn: 'Classic Macaroon',
       price: 320,
-      image: '/src/assets/images/cake_3.JPG',
+      image: getPublicUrl('images/cake_3.jpg'),
       description: '微辣起司條，涮嘴好滋味，看劇必備',
       category: '經典甜點',
       inStock: true,
@@ -42,7 +43,7 @@ export const useProductsStore = defineStore('products', () => {
       name: '草莓起司蛋糕',
       nameEn: 'Strawberry Cheesecake',
       price: 300,
-      image: '/src/assets/images/cake_4.jpg',
+      image: getPublicUrl('images/cake_4.jpg'),
       description: '新鮮草莓搭配濃郁起司，口感豐富',
       category: '造型蛋糕',
       inStock: true,
@@ -53,7 +54,7 @@ export const useProductsStore = defineStore('products', () => {
       name: '千層酥',
       nameEn: 'Puff Pastry',
       price: 300,
-      image: '/src/assets/images/cake_5.jpg',
+      image: getPublicUrl('images/cake_5.jpg'),
       description: '經典千層酥，外層糖粉如雪花般美麗',
       category: '造型蛋糕',
       inStock: true,
@@ -64,7 +65,7 @@ export const useProductsStore = defineStore('products', () => {
       name: '提拉米蘇',
       nameEn: 'Tiramisu',
       price: 300,
-      image: '/src/assets/images/cake_6.jpg',
+      image: getPublicUrl('images/cake_6.jpg'),
       description: '提拉米蘇',
       category: '造型蛋糕',
       inStock: true,
@@ -75,7 +76,7 @@ export const useProductsStore = defineStore('products', () => {
       name: '草莓鬆餅',
       nameEn: 'Strawberry Waffle',
       price: 300,
-      image: '/src/assets/images/cake_7.jpg',
+      image: getPublicUrl('images/cake_7.jpg'),
       description: '精緻鬆餅',
       category: '精緻鬆餅',
       inStock: true,
@@ -90,7 +91,7 @@ export const useProductsStore = defineStore('products', () => {
       name: '精緻禮袋',
       nameEn: 'Elegant Gift Bag',
       price: 200,
-      image: '/src/assets/images/boxPackage_1.jpg',
+      image: getPublicUrl('images/boxPackage_1.jpg'),
       description: '一人一包獨享剛剛好',
       category: '禮盒',
       inStock: true
@@ -100,7 +101,7 @@ export const useProductsStore = defineStore('products', () => {
       name: '紙盒禮盒',
       nameEn: 'Paper Gift Box',
       price: 400,
-      image: '/src/assets/images/boxPackage_2.jpg',
+      image: getPublicUrl('images/boxPackage_2.jpg'),
       description: '三五好友聊天的好選擇',
       category: '禮盒',
       inStock: true
@@ -110,7 +111,7 @@ export const useProductsStore = defineStore('products', () => {
       name: '鐵盒禮盒',
       nameEn: 'Metal Gift Box',
       price: 600,
-      image: '/src/assets/images/boxPackage_3.jpg',
+      image: getPublicUrl('images/boxPackage_3.jpg'),
       description: '送禮最佳質感挑這盒',
       category: '禮盒',
       inStock: true

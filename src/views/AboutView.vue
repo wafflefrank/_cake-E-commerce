@@ -24,7 +24,7 @@
               </div>
             </div>
             <div class="story-image">
-              <img src="/src/assets/images/boxflower.JPG" alt="品牌故事" />
+              <img :src="getPublicUrl('images/boxflower.JPG')" alt="品牌故事" />
             </div>
           </div>
         </div>
@@ -149,6 +149,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useProductsStore } from '@/stores/products'
+import { getPublicUrl } from '@/utils/getPublicUrl'
 
 const productsStore = useProductsStore()
 
