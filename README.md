@@ -1,35 +1,176 @@
-# vite_normal
+# 甜點電商
 
-This template should help get you started developing with Vue 3 in Vite.
+一個現代化的甜點電商網站，採用 Vue 3 和 Vite 構建，提供完整的購物體驗，包括商品瀏覽、購物車管理、用戶認證和結帳流程。
 
-## Recommended IDE Setup
+## 功能特色
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- 🏠 **首頁展示**：精美的輪播橫幅和商品推薦
+- 🛍️ **商品瀏覽**：完整的商品列表展示，支援分類瀏覽
+- 🛒 **購物車功能**：即時購物車管理，支援數量調整和商品移除
+- 👤 **用戶系統**：登入/註冊功能，個人化體驗
+- 💳 **結帳流程**：三步驟結帳流程（商品確認、付款、完成）
+- ❓ **FAQ 頁面**：常見問題解答，使用 Bootstrap Accordion 組件
+- 📱 **響應式設計**：完美適配桌面和行動裝置
+- 🎨 **精美 UI**：統一的視覺風格和流暢的動畫效果
 
-## Customize configuration
+## 使用技術
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+- **Vite** - 現代化的前端構建工具
+- **Vue 3** - 漸進式 JavaScript 框架
+- **Pinia** - 狀態管理（取代 Vuex）
+- **Vue Router** - 官方路由管理器
+- **Bootstrap 5** - CSS 框架，用於響應式設計和 UI 組件
+- **AOS (Animate On Scroll)** - 滾動動畫庫
+- **GSAP** - 專業動畫庫
+- **Swiper** - 現代化的輪播組件
 
-## Project Setup
+## GitHub Pages 線上預覽
+
+🔗 [點擊查看線上預覽](https://[your-username].github.io/_cake-E-commerce/)
+
+> 注意：請將 `[your-username]` 替換為您的 GitHub 用戶名
+
+## 使用說明
+
+### 環境需求
+
+- Node.js >= 18.0.0
+- npm >= 9.0.0
+
+### 安裝依賴
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### 開發模式
+
+啟動開發伺服器，支援熱重載：
 
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+開發伺服器將在 `http://localhost:5173` 啟動。
+
+### 構建生產版本
+
+構建優化後的生產版本：
 
 ```sh
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+構建產物將輸出到 `dist` 目錄。
+
+### 預覽生產版本
+
+預覽構建後的生產版本：
+
+```sh
+npm run preview
+```
+
+### 程式碼檢查
+
+執行 ESLint 檢查並自動修復：
 
 ```sh
 npm run lint
 ```
+
+### 程式碼格式化
+
+使用 Prettier 格式化程式碼：
+
+```sh
+npm run format
+```
+
+## 狀態管理（Pinia）
+
+本專案使用 Pinia 進行狀態管理，主要包含以下 Store：
+
+### `auth.js` - 認證狀態管理
+
+管理用戶登入/註冊狀態：
+
+- `isAuthenticated` - 是否已登入
+- `user` - 當前用戶資訊
+- `login(username, password)` - 登入方法
+- `register(userData)` - 註冊方法
+- `logout()` - 登出方法
+
+### `cart.js` - 購物車狀態管理
+
+管理購物車商品和操作：
+
+- `items` - 購物車商品列表
+- `totalPrice` - 總價計算
+- `itemCount` - 商品總數量
+- `addItem(product)` - 添加商品
+- `removeItem(productId)` - 移除商品
+- `updateQuantity(productId, quantity)` - 更新數量
+- `clearCart()` - 清空購物車
+
+### `products.js` - 商品資料管理
+
+管理商品資料：
+
+- `products` - 商品列表
+- `getProductById(id)` - 根據 ID 獲取商品
+
+## 專案結構
+
+```
+_cake-E-commerce/
+├── public/              # 靜態資源
+│   └── images/         # 圖片資源
+├── src/
+│   ├── assets/         # 資源文件
+│   ├── components/     # Vue 組件
+│   │   └── AuthModal.vue
+│   ├── router/         # 路由配置
+│   │   └── index.js
+│   ├── stores/         # Pinia 狀態管理
+│   │   ├── auth.js
+│   │   ├── cart.js
+│   │   └── products.js
+│   ├── utils/          # 工具函數
+│   │   └── getPublicUrl.js
+│   ├── views/          # 頁面組件
+│   │   ├── HomeView.vue
+│   │   ├── ProductsView.vue
+│   │   ├── AboutView.vue
+│   │   ├── FAQView.vue
+│   │   └── CheckoutView.vue
+│   ├── App.vue         # 根組件
+│   └── main.js         # 入口文件
+├── .github/
+│   └── workflows/
+│       └── deploy.yml  # GitHub Actions 部署配置
+├── vite.config.js      # Vite 配置
+└── package.json        # 專案配置
+```
+
+## 部署說明
+
+本專案使用 GitHub Actions 自動部署到 GitHub Pages：
+
+1. 推送代碼到 `main` 分支
+2. GitHub Actions 自動觸發構建流程
+3. 自動部署到 GitHub Pages
+
+部署配置位於 `.github/workflows/deploy.yml`。
+
+## 推薦 IDE 設置
+
+- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)（並停用 Vetur）
+
+## 自訂配置
+
+詳見 [Vite 配置參考](https://vitejs.dev/config/)。
+
+## 授權
+
+本專案為個人專案，僅供學習和展示使用。
