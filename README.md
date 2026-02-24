@@ -26,7 +26,7 @@
 
 ## GitHub Pages 線上預覽
 
-🔗 [點擊查看線上預覽](https://[your-username].github.io/_cake-E-commerce/)
+🔗 [點擊查看線上預覽](https://wafflefrank.github.io/_cake-E-commerce/)
 
 > 注意：請將 `[your-username]` 替換為您的 GitHub 用戶名
 
